@@ -1,43 +1,34 @@
 import express from "express";
-import { graphqlHTTP } from "express-graphql";
-import { buildSchema } from "graphql";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { ApolloServer } from 'apollo-server-express';
+import { schema } from './graphql/schemas/schema'; // Ajuste o caminho conforme necessário
 
 dotenv.config();
-const port = process.env.PORT;
+const port = process.env.PORT || 4000; // Fornecer um valor padrão caso PORT não esteja definido
 const uri = process.env.MONGO_URI as string;
-
-// Construa um esquema, usando a linguagem de esquema GraphQL
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
 
 const run = async () => {
     console.log(uri);
     await mongoose.connect(uri);
-    console.log("Connected to myDB");
+    console.log("Connected to MongoDB");
 };
 
-// A raiz fornece uma função resolver para cada API endpoint
-const root = {
-    hello: () => {
-        return "Hello world!";
-    },
-};
+run().catch(error => console.error(error));
 
 const app = express();
-app.use(
-    "/graphql",
-    graphqlHTTP({
-        schema: schema,
-        rootValue: root,
-        graphiql: true, // Habilita a interface GraphiQL
-    })
-);
+const server = new ApolloServer({
+    schema,
+    // Pode adicionar context, dataSources, etc., aqui
+});
 
-app.listen(4000, () =>
-    console.log(`Servidor rodando em http://localhost:${port}/graphql`)
-);
+async function startServer() {
+    await server.start();
+    server.applyMiddleware({ app: app as any });
+
+    app.listen({ port }, () =>
+        console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`)
+    );
+}
+
+startServer();
