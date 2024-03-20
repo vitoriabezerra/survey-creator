@@ -1,26 +1,12 @@
-import { StyleSheet, View } from "react-native";
+import * as React from "react";
+import { Provider as PaperProvider } from "react-native-paper";
 import Login from "./src/screens/login";
+import theme from "./src/assets/theme";
 
 export default function App() {
     return (
-        <View style={styles.container}>
-            {/* <Text>
-                Open up App.js to start working on your app! testetetete
-                atualizou
-            </Text>
-            <Button title="teste"></Button>
-            <StatusBar style="auto" /> */}
-
-            <Login></Login>
-        </View>
+        <PaperProvider theme={theme}>
+            <Login />
+        </PaperProvider>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-});
