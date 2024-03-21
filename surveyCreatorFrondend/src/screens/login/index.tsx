@@ -63,6 +63,8 @@ const Login = () => {
                     placeholder="Email"
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    secureTextEntry
+                    right={<TextInput.Icon icon="eye" />}
                 />
                 <TextInput
                     style={styles.input}

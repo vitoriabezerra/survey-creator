@@ -8,6 +8,7 @@ export interface ISurvey {
 export interface ISurveyQuestion {
     title: string;
     options: string[];
+    isMandatory: boolean
     answer: string;
 }
 

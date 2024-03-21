@@ -1,18 +1,13 @@
 import React, { useState } from "react";
-import {
-    View,
-    TextInput,
-    Button,
-    Switch,
-    Text,
-    ScrollView,
-} from "react-native";
+import { View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { TextInput, Button, Switch, Text, Divider } from "react-native-paper";
 
 // Definição das interfaces
 interface ISurveyQuestion {
     title: string;
+    isMandatory: boolean;
     options: string[];
-    answer: string;
+    currentAnswer: string | null;
 }
 
 interface ISurvey {
@@ -24,15 +19,17 @@ interface ISurvey {
 
 // Componente para adicionar perguntas
 const QuestionInput = ({ onAddQuestion }) => {
-    const [questionTitle, setQuestionTitle] = useState("");
-    const [options, setOptions] = useState("");
+    const [questionTitle, setQuestionTitle] = useState<string>("");
+    const [options, setOptions] = useState<string>("");
+    const [isMandatory, setisMandatory] = useState<boolean>(true);
 
     const handleAddQuestion = () => {
-        const optionsArray = options.split(",").map((option) => option.trim()); // Transforma string em array
+        const optionsArray = options.split(";").map((option) => option.trim()); // Transforma string em array
         onAddQuestion({
             title: questionTitle,
+            isMandatory: isMandatory,
             options: optionsArray,
-            answer: "",
+            answer: null,
         });
         setQuestionTitle("");
         setOptions("");
@@ -40,17 +37,62 @@ const QuestionInput = ({ onAddQuestion }) => {
 
     return (
         <View>
+            <Text style={styles.surveyText}>Adicionar perguntas</Text>
             <TextInput
-                placeholder="Título da Pergunta"
+                style={styles.input}
+                placeholder="Título da pergunta"
                 value={questionTitle}
                 onChangeText={setQuestionTitle}
             />
             <TextInput
-                placeholder="Opções separadas por vírgula"
+                style={styles.input}
+                placeholder="Opções separadas por ponto e vírgula"
                 value={options}
                 onChangeText={setOptions}
             />
-            <Button title="Adicionar Pergunta" onPress={handleAddQuestion} />
+            <View
+                style={{
+                    justifyContent: "flex-start",
+                }}
+            >
+                <Text>Essa pergunta é obrigatória?</Text>
+                <Switch
+                    value={isMandatory}
+                    onValueChange={(value) => {
+                        setisMandatory(value);
+                    }}
+                    style={{
+                        alignContent: "flex-start",
+                    }}
+                />
+            </View>
+            <View>
+                <Button
+                    style={styles.button}
+                    mode="outlined"
+                    onPress={handleAddQuestion}
+                >
+                    Adicionar pergunta
+                </Button>
+                {/* <Divider /> */}
+            </View>
+        </View>
+    );
+};
+
+const SurveyQuestionsPreview = ({ questions }) => {
+    return (
+        <View>
+            {questions.map((question, index) => (
+                <View key={index} style={{ marginBottom: 20 }}>
+                    <Text style={{ fontWeight: "bold" }}>{question.title}</Text>
+                    {question.options.map((option, optionIndex) => (
+                        <Text key={optionIndex} style={{ marginLeft: 10 }}>
+                            {option}
+                        </Text>
+                    ))}
+                </View>
+            ))}
         </View>
     );
 };
@@ -72,19 +114,22 @@ const CreateSurveyScreen = () => {
     // Aqui você implementaria a lógica para salvar a pesquisa, por exemplo, enviando para uma API
 
     return (
-        <ScrollView>
+        <ScrollView style={styles.container}>
+            <Text style={styles.surveyText}>Criar Pesquisa</Text>
             <TextInput
-                placeholder="Título da Pesquisa"
+                style={styles.input}
+                placeholder="Título da pesquisa"
                 onChangeText={(text) => setSurvey({ ...survey, title: text })}
             />
             <TextInput
+                style={styles.input}
                 placeholder="Descrição"
                 onChangeText={(text) =>
                     setSurvey({ ...survey, description: text })
                 }
             />
-            <View>
-                <Text>Status:</Text>
+            <View style={styles.input}>
+                <Text>Você deseja ativar essa pesquisa?</Text>
                 <Switch
                     value={isActivated}
                     onValueChange={(value) => {
@@ -96,14 +141,47 @@ const CreateSurveyScreen = () => {
                     }}
                 />
             </View>
+            {/* <Divider /> */}
             <QuestionInput onAddQuestion={handleAddQuestion} />
             <Button
-                title="Salvar Pesquisa"
+                style={styles.button}
+                mode="contained"
                 onPress={() => console.log(survey)}
-            />
+            >
+                Salvar pesquisa
+            </Button>
+            <TouchableOpacity>
+                <Text style={styles.cancelText}>Cancelar</Text>
+            </TouchableOpacity>
             {/* Renderizar as perguntas adicionadas para feedback visual ao usuário (opcional) */}
+            <SurveyQuestionsPreview questions={survey.questions} />
         </ScrollView>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 40,
+        width: "100%",
+    },
+    surveyText: {
+        fontSize: 22,
+        fontWeight: "700",
+        color: "rgba(33, 0, 93, 1)",
+        marginBottom: 20,
+    },
+    input: {
+        marginBottom: 20,
+    },
+    cancelText: {
+        textAlign: "center",
+        color: "rgba(56, 30, 114, 1)",
+        marginBottom: 20,
+    },
+    button: {
+        marginBottom: 10,
+    },
+});
 
 export default CreateSurveyScreen;

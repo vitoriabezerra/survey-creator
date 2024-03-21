@@ -7,8 +7,9 @@ import CreateSurveyScreen from "./src/screens/survey-creation";
 export default function App() {
     return (
         <PaperProvider theme={theme}>
-            <Login />
-            {/* <CreateSurveyScreen/> */}
+            {/* <Login /> */}
+            {/* teste */}
+            <CreateSurveyScreen />
         </PaperProvider>
     );
 }
