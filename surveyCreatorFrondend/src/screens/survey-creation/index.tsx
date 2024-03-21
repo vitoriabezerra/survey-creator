@@ -37,7 +37,7 @@ const QuestionInput = ({ onAddQuestion }) => {
 
     return (
         <View>
-            <Text style={styles.surveyText}>Adicionar perguntas</Text>
+            <Text style={styles.surveyText}>Criar pergunta</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Título da pergunta"
@@ -68,9 +68,10 @@ const QuestionInput = ({ onAddQuestion }) => {
             </View>
             <View>
                 <Button
-                    style={styles.button}
+                    style={styles.input}
                     mode="outlined"
                     onPress={handleAddQuestion}
+                    disabled={questionTitle === "" || options === ""}
                 >
                     Adicionar pergunta
                 </Button>
@@ -80,17 +81,35 @@ const QuestionInput = ({ onAddQuestion }) => {
     );
 };
 
-const SurveyQuestionsPreview = ({ questions }) => {
+const SurveyQuestionsPreview = ({ questions, onRemoveQuestion }) => {
     return (
         <View>
             {questions.map((question, index) => (
-                <View key={index} style={{ marginBottom: 20 }}>
-                    <Text style={{ fontWeight: "bold" }}>{question.title}</Text>
-                    {question.options.map((option, optionIndex) => (
-                        <Text key={optionIndex} style={{ marginLeft: 10 }}>
-                            {option}
+                <View
+                    key={index}
+                    style={{
+                        flexDirection: "row",
+                        marginBottom: 20,
+                        alignItems: "center",
+                    }}
+                >
+                    <View style={{ flex: 1, paddingRight: 20 }}>
+                        <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+                            {question.title}
+                            {question.isMandatory ? "*" : ""}
                         </Text>
-                    ))}
+                        {question.options.map((option, optionIndex) => (
+                            <Text key={optionIndex} style={{ marginLeft: 10 }}>
+                                • {option}
+                            </Text>
+                        ))}
+                    </View>
+                    {/* Botão para remover a pergunta */}
+                    <Button
+                        icon="trash-can-outline"
+                        onPress={() => onRemoveQuestion(index)}
+                        children={""}
+                    />
                 </View>
             ))}
         </View>
@@ -109,6 +128,16 @@ const CreateSurveyScreen = () => {
 
     const handleAddQuestion = (question: ISurveyQuestion) => {
         setSurvey({ ...survey, questions: [...survey.questions, question] });
+    };
+
+    const handleRemoveQuestion = (questionIndex) => {
+        // Atualiza o estado para remover a pergunta com base no índice
+        setSurvey((currentSurvey) => ({
+            ...currentSurvey,
+            questions: currentSurvey.questions.filter(
+                (_, index) => index !== questionIndex
+            ),
+        }));
     };
 
     // Aqui você implementaria a lógica para salvar a pesquisa, por exemplo, enviando para uma API
@@ -141,12 +170,23 @@ const CreateSurveyScreen = () => {
                     }}
                 />
             </View>
-            {/* <Divider /> */}
+            <Divider style={styles.input} />
             <QuestionInput onAddQuestion={handleAddQuestion} />
+
+            {survey.questions.length > 0 && (
+                <View>
+                    <Divider style={{ marginBottom: 10 }} />
+                    <SurveyQuestionsPreview
+                        questions={survey.questions}
+                        onRemoveQuestion={handleRemoveQuestion}
+                    />
+                </View>
+            )}
             <Button
                 style={styles.button}
                 mode="contained"
                 onPress={() => console.log(survey)}
+                disabled={survey.questions.length === 0 || survey.title === ""}
             >
                 Salvar pesquisa
             </Button>
@@ -154,7 +194,6 @@ const CreateSurveyScreen = () => {
                 <Text style={styles.cancelText}>Cancelar</Text>
             </TouchableOpacity>
             {/* Renderizar as perguntas adicionadas para feedback visual ao usuário (opcional) */}
-            <SurveyQuestionsPreview questions={survey.questions} />
         </ScrollView>
     );
 };
@@ -163,6 +202,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 40,
+        paddingBottom: 0,
         width: "100%",
     },
     surveyText: {
