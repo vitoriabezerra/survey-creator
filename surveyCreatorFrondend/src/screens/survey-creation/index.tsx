@@ -1,21 +1,7 @@
 import React, { useState } from "react";
 import { View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { TextInput, Button, Switch, Text, Divider } from "react-native-paper";
-
-// Definição das interfaces
-interface ISurveyQuestion {
-    title: string;
-    isMandatory: boolean;
-    options: string[];
-    currentAnswer: string | null;
-}
-
-interface ISurvey {
-    title: string;
-    status: "activated" | "deactivated";
-    description: string;
-    questions: ISurveyQuestion[];
-}
+import { ISurvey, ISurveyQuestion } from "../../models/surveyModel";
 
 // Componente para adicionar perguntas
 const QuestionInput = ({ onAddQuestion }) => {
@@ -68,14 +54,13 @@ const QuestionInput = ({ onAddQuestion }) => {
             </View>
             <View>
                 <Button
-                    style={styles.input}
+                    style={styles.button}
                     mode="outlined"
                     onPress={handleAddQuestion}
                     disabled={questionTitle === "" || options === ""}
                 >
                     Adicionar pergunta
                 </Button>
-                {/* <Divider /> */}
             </View>
         </View>
     );
@@ -190,10 +175,13 @@ const CreateSurveyScreen = () => {
             >
                 Salvar pesquisa
             </Button>
-            <TouchableOpacity>
-                <Text style={styles.cancelText}>Cancelar</Text>
-            </TouchableOpacity>
-            {/* Renderizar as perguntas adicionadas para feedback visual ao usuário (opcional) */}
+            <Button
+                style={styles.button}
+                mode="text"
+                onPress={() => console.log("cancelou")}
+            >
+                Cancelar
+            </Button>
         </ScrollView>
     );
 };
@@ -202,8 +190,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 40,
-        paddingBottom: 0,
+        paddingTop: 0,
         width: "100%",
+        marginTop:40
     },
     surveyText: {
         fontSize: 22,

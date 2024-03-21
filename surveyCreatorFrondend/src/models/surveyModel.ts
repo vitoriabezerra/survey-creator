@@ -1,17 +1,17 @@
+// Definição das interfaces
+export interface ISurveyQuestion {
+    title: string;
+    isMandatory: boolean;
+    options: string[];
+    currentAnswer: string | null;
+}
+
 export interface ISurvey {
     title: string;
-    status: "activated" | "deativated";
+    status: "activated" | "deactivated";
     description: string;
     questions: ISurveyQuestion[];
 }
-
-export interface ISurveyQuestion {
-    title: string;
-    options: string[];
-    isMandatory: boolean
-    answer: string;
-}
-
 export interface ISurveyCreation {
     surveyId: string;
     createdAt: string;
