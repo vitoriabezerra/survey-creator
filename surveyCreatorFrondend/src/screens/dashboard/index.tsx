@@ -1,11 +1,13 @@
 // Dashboard.js
-import React from "react";
+import React, { useState } from "react";
 import { View, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { Button, Text } from "react-native-paper";
-import { ISurvey, ISurveyCreation } from "../../models/surveyModel";
+import { ISurveyCreation } from "../../models/surveyModel";
 import moment from "moment";
 
-const Dashboard = ({ navigation, email }) => {
+const Dashboard = ({ route, navigation }) => {
+    const { email, user } = route.params;
+
     // Lista de pesquisas criadas
     const surveys: ISurveyCreation[] = [
         {
@@ -95,43 +97,70 @@ const Dashboard = ({ navigation, email }) => {
         },
     ];
 
-    const goToSurveyEditCreate = (survey: ISurveyCreation | null = null) => {
+    const goToSurveyEditCreate = (survey = null) => {
         navigation.navigate("SurveyEditCreate", {
             survey: survey ? survey.survey : null,
         });
     };
 
+    const goToSurveyResponse = (surveyId) => {
+        navigation.navigate("AnswerSurvey", { surveyId });
+    };
+
     return (
         <View style={styles.container}>
-            <Text style={styles.surveyText}>Pesquisas</Text>
-            <FlatList
-                data={surveys}
-                keyExtractor={(item) => item.surveyId}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.surveyItem}
-                        onPress={() => goToSurveyEditCreate(item)}
+            <View style={{ padding: 30, paddingTop: 20 }}>
+                <Text style={styles.surveyText}>Pesquisas</Text>
+                <FlatList
+                    data={
+                        user === "admin"
+                            ? surveys
+                            : surveys.filter(
+                                  (survey) => survey.survey.isActivated
+                              )
+                    }
+                    keyExtractor={(item) => item.surveyId}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={styles.surveyItem}
+                            onPress={() =>
+                                user === "admin"
+                                    ? goToSurveyEditCreate(item)
+                                    : goToSurveyResponse(item.surveyId)
+                            }
+                        >
+                            <View style={styles.surveyTextContainer}>
+                                <Text
+                                    style={styles.surveyTitle}
+                                    numberOfLines={1}
+                                >
+                                    {item.survey.title}
+                                </Text>
+                                <Text style={styles.surveyDateText}>
+                                    {user==='admin' ? moment(item.createdAt).format("DD/MM/YYYY"): item.survey.description} 
+                                </Text>
+                            </View>
+                            {user === "admin" && (
+                                <Button
+                                    icon="square-edit-outline"
+                                    children={""}
+                                    onPress={() => goToSurveyEditCreate(item)}
+                                />
+                            )}
+                        </TouchableOpacity>
+                    )}
+                />
+                {user === "admin" && (
+                    <Button
+                        style={styles.addButton}
+                        icon="plus"
+                        mode="contained"
+                        onPress={() => goToSurveyEditCreate(null)}
                     >
-                        <View style={styles.surveyTextContainer}>
-                            <Text style={styles.surveyTitle} numberOfLines={1}>
-                                {item.survey.title}
-                            </Text>
-                            <Text style={styles.surveyDateText}>
-                                {moment(item.createdAt).format("DD/MM/YYYY")}
-                            </Text>
-                        </View>
-                        <Button icon="square-edit-outline" children={""} />
-                    </TouchableOpacity>
+                        Criar nova pesquisa
+                    </Button>
                 )}
-            />
-            <Button
-                style={styles.addButton}
-                icon="plus"
-                mode="contained"
-                onPress={() => goToSurveyEditCreate()}
-            >
-                Criar nova pesquisa
-            </Button>
+            </View>
         </View>
     );
 };
@@ -141,41 +170,43 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
     },
-    surveyTextContainer: {
-        flex: 1, // Faz com que o container de texto ocupe a maior parte do espaço horizontal...
-        marginRight: 10, // ...mas deixa espaço para o botão
-    },
-    surveyTitle: {
-        fontSize: 16,
-        fontWeight: "bold",
-        marginBottom: 5, // Espaço entre o título e a data
-    },
-    surveyDateText: {
-        fontSize: 14, // Menor que o título para diferenciação
-        color: "#666", // Cor mais sutil para a data
-    },
     surveyText: {
-        marginLeft: 20,
         fontSize: 22,
         fontWeight: "700",
         color: "#af69cd",
         marginBottom: 10,
     },
     surveyItem: {
-        padding: 20,
-        paddingRight: 0,
-        borderBottomWidth: 1,
-        borderBottomColor: "#cccccc",
         flexDirection: "row",
-        justifyContent: "space-between",
+        marginBottom: 20,
+        alignItems: "center",
+        backgroundColor: "#f0f0f0", // Fundo claro para cada item
+        borderRadius: 8,
+        padding: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 4,
     },
-    surveyDate: {
-        flexDirection: "row",
-        justifyContent: "flex-start",
+    surveyTextContainer: {
+        flex: 1,
+    },
+    surveyTitle: {
+        fontWeight: "bold",
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    surveyDateText: {
+        fontSize: 14,
     },
     addButton: {
         margin: 20,
     },
+    // Adicione outros estilos necessários aqui
 });
 
 export default Dashboard;

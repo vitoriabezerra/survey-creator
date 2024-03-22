@@ -142,7 +142,7 @@ const CreateEditSurveyScreen = ({ route, navigation }) => {
     return (
         <View style={styles.outerContainer}>
             <ScrollView style={styles.container}>
-                <View style={{ padding: 40, paddingTop: 20 }}>
+                <View style={{ padding: 30, paddingTop: 20 }}>
                     <Text style={styles.surveyText}>
                         {isEdition ? "Editar" : "Criar"} pesquisa
                     </Text>

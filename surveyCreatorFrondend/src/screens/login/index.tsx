@@ -12,11 +12,23 @@ import Layout from "../../assets/Layout";
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    let user: "user" | "admin" = "user";
 
     // Sign in the user
     const handleLogin = () => {
         console.log("Input do login", email, password);
-        navigation.navigate("Dashboard", { email });
+
+        // TO DO - Logica do login
+        // Esta é uma simplificação para fins de exemplo
+        let userRole: "user" | "admin";
+
+        if (email === "admin" && password === "admin") {
+            userRole = "admin";
+        } else {
+            userRole = "user";
+        }
+
+        navigation.navigate("Dashboard", { email, user: userRole });
     };
 
     // Redirect to the reset password page
