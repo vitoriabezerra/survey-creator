@@ -12,6 +12,7 @@ import Layout from "../../assets/Layout";
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [hidePassword, setHidePassword] = useState<boolean>(true)
     let user: "user" | "admin" = "user";
 
     // Sign in the user
@@ -83,7 +84,7 @@ const Login = ({ navigation }) => {
                     value={password}
                     onChangeText={setPassword}
                     label="Senha"
-                    secureTextEntry
+                    secureTextEntry = {hidePassword}
                     right={<TextInput.Icon icon="eye" />}
                     style={styles.input}
                 />
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        padding: 40,
+        padding: 30,
         width: "100%",
     },
     texts: {
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
     },
     buttonContainer: {
-        padding: 40,
+        padding: 30,
     },
 });
 

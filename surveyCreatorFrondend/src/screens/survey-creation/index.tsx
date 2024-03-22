@@ -278,6 +278,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#f0f0f0", // Um fundo leve para cada pergunta
         borderRadius: 8,
         padding: 10,
+        paddingRight:0,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

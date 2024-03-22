@@ -137,7 +137,11 @@ const Dashboard = ({ route, navigation }) => {
                                     {item.survey.title}
                                 </Text>
                                 <Text style={styles.surveyDateText}>
-                                    {user==='admin' ? moment(item.createdAt).format("DD/MM/YYYY"): item.survey.description} 
+                                    {user === "admin"
+                                        ? moment(item.createdAt).format(
+                                              "DD/MM/YYYY"
+                                          )
+                                        : item.survey.description}
                                 </Text>
                             </View>
                             {user === "admin" && (
@@ -168,7 +172,6 @@ const Dashboard = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
     },
     surveyText: {
         fontSize: 22,
@@ -180,17 +183,19 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginBottom: 20,
         alignItems: "center",
-        backgroundColor: "#f0f0f0", // Fundo claro para cada item
+        backgroundColor: "#ffffff", // Fundo claro para cada item
         borderRadius: 8,
         padding: 10,
+        paddingRight: 0,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
             height: 2,
         },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
         elevation: 4,
+        justifyContent: "space-between",
     },
     surveyTextContainer: {
         flex: 1,
