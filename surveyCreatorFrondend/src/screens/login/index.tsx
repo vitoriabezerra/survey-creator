@@ -9,13 +9,14 @@ import {
 import { Button, TextInput, Text } from "react-native-paper";
 import Layout from "../../assets/Layout";
 
-const Login = () => {
+const Login = ({ navigation }) => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
     // Sign in the user
     const handleLogin = () => {
         console.log("Input do login", email, password);
+        navigation.navigate("Dashboard", { email });
     };
 
     // Redirect to the reset password page
@@ -57,28 +58,31 @@ const Login = () => {
                 </View>
 
                 <TextInput
+                    mode="flat"
                     style={styles.input}
                     value={email}
                     onChangeText={setEmail}
-                    placeholder="Email"
+                    label="Email"
                     keyboardType="email-address"
                     autoCapitalize="none"
-                    secureTextEntry
-                    right={<TextInput.Icon icon="eye" />}
                 />
                 <TextInput
-                    style={styles.input}
+                    mode="flat"
                     value={password}
                     onChangeText={setPassword}
-                    placeholder="Senha"
+                    label="Senha"
                     secureTextEntry
+                    right={<TextInput.Icon icon="eye" />}
+                    style={styles.input}
                 />
-                <Button onPress={handleLogin}>Fazer login</Button>
-                <TouchableOpacity onPress={handleForgotPassword}>
-                    <Text style={styles.forgotPasswordText}>
+                <View style={styles.buttonContainer}>
+                    <Button mode="contained" onPress={handleLogin}>
+                        Fazer login
+                    </Button>
+                    <Button mode="text" onPress={handleForgotPassword}>
                         Esqueci a senha
-                    </Text>
-                </TouchableOpacity>
+                    </Button>
+                </View>
             </View>
         </Layout>
     );
@@ -110,11 +114,11 @@ const styles = StyleSheet.create({
         lineHeight: 130,
     },
     input: {
-        marginBottom: 20,
+        marginBottom: 10,
+        backgroundColor: "transparent",
     },
-    forgotPasswordText: {
-        textAlign: "center",
-        color: "rgba(56, 30, 114, 1)",
+    buttonContainer: {
+        padding: 40,
     },
 });
 

@@ -8,7 +8,7 @@ export interface ISurveyQuestion {
 
 export interface ISurvey {
     title: string;
-    status: "activated" | "deactivated";
+    isActivated: boolean;
     description: string;
     questions: ISurveyQuestion[];
 }
