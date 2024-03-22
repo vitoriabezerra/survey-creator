@@ -16,6 +16,11 @@ export interface IUserSurveys {
     created: string[];
 }
 
+export interface IUserLogin {
+    email: string;
+    password: string;
+}
+
 const UserSurveysSchema = new Schema<IUserSurveys>(
     {
         answered: [{ type: String }],
@@ -25,6 +30,7 @@ const UserSurveysSchema = new Schema<IUserSurveys>(
 );
 
 const UserSchema = new Schema<IUser>({
+    id: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },

@@ -19,7 +19,6 @@ run().catch(error => console.error(error));
 const app = express();
 const server = new ApolloServer({
     schema,
-    // Pode adicionar context, dataSources, etc., aqui
 });
 
 async function startServer() {

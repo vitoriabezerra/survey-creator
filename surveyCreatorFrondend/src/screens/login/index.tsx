@@ -8,28 +8,31 @@ import {
 
 import { Button, TextInput, Text } from "react-native-paper";
 import Layout from "../../assets/Layout";
+import { useMutation } from "@apollo/client";
+import { LOGIN_MUTATION } from "../../graphql/mutations/mutations";
+import { IUser } from "../../models/userModel";
 
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [hidePassword, setHidePassword] = useState<boolean>(true)
-    let user: "user" | "admin" = "user";
+    const [hidePassword, setHidePassword] = useState<boolean>(true);
+
+    const [login, { data, loading, error }] = useMutation(LOGIN_MUTATION);
+    const [user, setUser] = useState<IUser | null>(null);
+    // let user: "user" | "admin" = "user";
 
     // Sign in the user
     const handleLogin = () => {
-        console.log("Input do login", email, password);
-
-        // TO DO - Logica do login
-        // Esta é uma simplificação para fins de exemplo
-        let userRole: "user" | "admin";
-
-        if (email === "admin" && password === "admin") {
-            userRole = "admin";
-        } else {
-            userRole = "user";
-        }
-
-        navigation.navigate("Dashboard", { email, user: userRole });
+        console.log("aqui");
+        login({ variables: { email, password } })
+            .then((response) => {
+                console.log(response);
+                navigation.navigate("Dashboard");
+            })
+            .catch((err) => {
+                // Tratar o erro
+                console.error(err);
+            });
     };
 
     // Redirect to the reset password page
@@ -84,7 +87,7 @@ const Login = ({ navigation }) => {
                     value={password}
                     onChangeText={setPassword}
                     label="Senha"
-                    secureTextEntry = {hidePassword}
+                    secureTextEntry={hidePassword}
                     right={<TextInput.Icon icon="eye" />}
                     style={styles.input}
                 />

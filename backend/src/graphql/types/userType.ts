@@ -1,6 +1,6 @@
 import { gql } from "apollo-server-express"; // Ou 'apollo-server' se você não estiver usando Express.
 
-export const userType = gql`
+export const userType = `#graphql
     # Enum para o tipo de usuário
     enum TypeOfUser {
         admin
@@ -40,12 +40,18 @@ export const userType = gql`
         created: [String!]!
     }
 
-    extend type Query {
+    type MessageResponse {
+        message: String!
+    }
+
+    type Query {
         user(id: ID!): User
         users: [User!]!
     }
 
-    extend type Mutation {
+    type Mutation {
         createUser(input: UserInput!): User!
+        login(email: String!, password: String!): User!
+        resetPassword(email: String!, password: String!): MessageResponse!
     }
 `;
