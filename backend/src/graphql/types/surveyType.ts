@@ -46,6 +46,5 @@ export const surveyType = `#graphql
     type Mutation {
         createSurvey(input: SurveyInput!): Survey! # Cria uma nova survey
         updateSurvey(id: ID!, input: SurveyInput!): Survey! # Atualiza uma survey existente
-
     }
 `;

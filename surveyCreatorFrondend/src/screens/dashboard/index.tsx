@@ -1,111 +1,38 @@
 // Dashboard.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { Button, Text } from "react-native-paper";
-import { ISurveyCreation } from "../../models/surveyModel";
 import moment from "moment";
 import { IUser } from "../../models/userModel";
+import { GET_SURVEYS_QUERY } from "../../graphql/queries/queries";
+import { useQuery } from "@apollo/client";
+import { ISurvey } from "../../models/surveyModel";
 
 const Dashboard = ({ route, navigation }) => {
     const { user } = route.params;
 
+    const [surveys, setSurveys] = useState<ISurvey[]>([]);
+
     const loggedUser: IUser = user;
+    const { loading, error, data } = useQuery(GET_SURVEYS_QUERY, {
+        variables: {
+            isActivated: loggedUser.typeOfUser === "user" ? true : undefined,
+        },
+    });
 
-    // Lista de pesquisas criadas
-    // const surveys: ISurveyCreation[] = [
-    //     {
-    //         surveyId: "survey1",
-    //         createdAt: "2023-03-20T12:00:00Z",
-    //         createdBy: "user123",
-    //         survey: {
-    //             title: "Feedback do Curso de React Native",
-    //             isActivated: false,
-    //             description:
-    //                 "Nos conte o que você achou do curso de React Native.",
-    //             questions: [
-    //                 {
-    //                     title: "Como você avalia o conteúdo do curso?",
-    //                     options: ["Excelente", "Bom", "Regular", "Ruim"],
-    //                     currentAnswer: null,
-    //                     isMandatory: true,
-    //                 },
-    //                 {
-    //                     title: "O curso atendeu suas expectativas?",
-    //                     options: ["Sim", "Não"],
-    //                     currentAnswer: null,
-    //                     isMandatory: true,
-    //                 },
-    //             ],
-    //         },
-    //     },
-    //     {
-    //         surveyId: "survey2",
-    //         createdAt: "2023-03-21T15:30:00Z",
-    //         createdBy: "admin456",
-    //         survey: {
-    //             title: "Pesquisa de Satisfação de Cliente",
-    //             isActivated: true,
-    //             description:
-    //                 "Ajude-nos a melhorar nossos serviços respondendo esta rápida pesquisa.",
-    //             questions: [
-    //                 {
-    //                     title: "Você recomendaria nossos serviços a amigos ou familiares?",
-    //                     options: [
-    //                         "Definitivamente sim",
-    //                         "Provavelmente sim",
-    //                         "Provavelmente não",
-    //                         "Definitivamente não",
-    //                     ],
-    //                     currentAnswer: null,
-    //                     isMandatory: true,
-    //                 },
-    //                 {
-    //                     title: "Como você avalia nosso atendimento ao cliente?",
-    //                     options: ["Excelente", "Bom", "Regular", "Ruim"],
-    //                     currentAnswer: null,
-    //                     isMandatory: true,
-    //                 },
-    //             ],
-    //         },
-    //     },
-    //     {
-    //         surveyId: "survey3",
-    //         createdAt: "2023-03-21T15:30:00Z",
-    //         createdBy: "admin456",
-    //         survey: {
-    //             title: "Pesquisa de Satisfação de Cliente, testando titulo muito grande",
-    //             isActivated: false,
-    //             description:
-    //                 "Ajude-nos a melhorar nossos serviços respondendo esta rápida pesquisa.",
-    //             questions: [
-    //                 {
-    //                     title: "Você recomendaria nossos serviços a amigos ou familiares?",
-    //                     options: [
-    //                         "Definitivamente sim",
-    //                         "Provavelmente sim",
-    //                         "Provavelmente não",
-    //                         "Definitivamente não",
-    //                     ],
-    //                     currentAnswer: null,
-    //                     isMandatory: true,
-    //                 },
-    //                 {
-    //                     title: "Como você avalia nosso atendimento ao cliente?",
-    //                     options: ["Excelente", "Bom", "Regular", "Ruim"],
-    //                     currentAnswer: null,
-    //                     isMandatory: true,
-    //                 },
-    //             ],
-    //         },
-    //     },
-    // ];
+    useEffect(() => {
+        // Quando os dados forem recebidos e não estiverem mais carregando, atualize o estado de surveys
+        if (!loading && data) {
+            console.log(data);
+            setSurveys(data.surveys);
+        }
+    }, [loading, data]); // Depende de loading e data para reagir a mudanças
 
+    if (loading) return <Text>...</Text>;
 
-    const surveys: ISurveyCreation[] = []
-    
     const goToSurveyEditCreate = (survey = null) => {
         navigation.navigate("SurveyEditCreate", {
-            survey: survey ? survey.survey : null,
+            survey: survey ? survey : null,
         });
     };
 
@@ -118,47 +45,49 @@ const Dashboard = ({ route, navigation }) => {
             <View style={{ padding: 30, paddingTop: 20 }}>
                 <Text style={styles.surveyText}>Pesquisas</Text>
                 <FlatList
-                    data={
-                        loggedUser.typeOfUser === "admin"
-                            ? surveys
-                            : surveys.filter(
-                                  (survey) => survey.survey.isActivated
-                              )
-                    }
-                    keyExtractor={(item) => item.surveyId}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                            style={styles.surveyItem}
-                            onPress={() =>
-                                loggedUser.typeOfUser === "admin"
-                                    ? goToSurveyEditCreate(item)
-                                    : goToSurveyResponse(item.surveyId)
-                            }
-                        >
-                            <View style={styles.surveyTextContainer}>
-                                <Text
-                                    style={styles.surveyTitle}
-                                    numberOfLines={1}
-                                >
-                                    {item.survey.title}
-                                </Text>
-                                <Text style={styles.surveyDateText}>
-                                    {loggedUser.typeOfUser === "admin"
-                                        ? moment(item.createdAt).format(
-                                              "DD/MM/YYYY"
-                                          )
-                                        : item.survey.description}
-                                </Text>
-                            </View>
-                            {loggedUser.typeOfUser === "admin" && (
-                                <Button
-                                    icon="square-edit-outline"
-                                    children={""}
-                                    onPress={() => goToSurveyEditCreate(item)}
-                                />
-                            )}
-                        </TouchableOpacity>
-                    )}
+                    data={surveys}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => {
+                        const isAnswered =
+                            loggedUser.typeOfUser === "user" &&
+                            loggedUser.surveys.answered.includes(item.id);
+                        return (
+                            <TouchableOpacity
+                                style={[
+                                    styles.surveyItem,
+                                    isAnswered ? styles.surveyItemDisabled : {},
+                                ]}
+                                onPress={() => {
+                                    if (loggedUser.typeOfUser === "admin") {
+                                        goToSurveyEditCreate(item);
+                                    } else if (!isAnswered) {
+                                        goToSurveyResponse(item.id);
+                                    } else {
+                                        // Opcionalmente, maneje o caso de tentar responder uma pesquisa já respondida
+                                    }
+                                }}
+                                disabled={isAnswered} // Desabilita a interatividade se já foi respondida
+                            >
+                                <View style={{ flexDirection: "column" }}>
+                                    <Text style={styles.surveyTitle}>
+                                        {item.title}
+                                    </Text>
+                                    <Text style={styles.surveyDateText}>
+                                        {loggedUser.typeOfUser === "admin"
+                                            ? moment(item.createdAt).format(
+                                                  "DD/MM/YYYY"
+                                              )
+                                            : item.description}
+                                    </Text>
+                                    {isAnswered && (
+                                        <View style={{marginTop:10}}>
+                                            <Text>✓ Respondido</Text>
+                                        </View>
+                                    )}
+                                </View>
+                            </TouchableOpacity>
+                        );
+                    }}
                 />
                 {loggedUser.typeOfUser === "admin" && (
                     <Button
@@ -211,6 +140,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 5,
     },
+    surveyItemDisabled: {
+        opacity: 0.5, // Torna o card mais "pálido"
+    },
+    
     surveyDateText: {
         fontSize: 14,
     },

@@ -14,3 +14,39 @@ export const LOGIN_MUTATION = gql`
         }
     }
 `;
+
+export const exoirCREATE_SURVEY_MUTATION = gql`
+    mutation CreateSurvey($input: SurveyInput!) {
+        createSurvey(input: $input) {
+            id
+            title
+            description
+            isActivated
+            questions {
+                title
+                isMandatory
+                options
+            }
+            createdAt
+            createdBy
+        }
+    }
+`;
+
+export const UPDATE_SURVEY_MUTATION = gql`
+    mutation updateSurvey($id: ID!, $input: SurveyInput!) {
+        updateSurvey(id: $id, input: $input) {
+            id
+            title
+            description
+            isActivated
+            questions {
+                title
+                isMandatory
+                options
+            }
+            createdAt
+            createdBy
+        }
+    }
+`;
