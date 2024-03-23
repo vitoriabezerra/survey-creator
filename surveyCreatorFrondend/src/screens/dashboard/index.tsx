@@ -4,99 +4,105 @@ import { View, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { Button, Text } from "react-native-paper";
 import { ISurveyCreation } from "../../models/surveyModel";
 import moment from "moment";
+import { IUser } from "../../models/userModel";
 
 const Dashboard = ({ route, navigation }) => {
-    const { email, user } = route.params;
+    const { user } = route.params;
+
+    const loggedUser: IUser = user;
 
     // Lista de pesquisas criadas
-    const surveys: ISurveyCreation[] = [
-        {
-            surveyId: "survey1",
-            createdAt: "2023-03-20T12:00:00Z",
-            createdBy: "user123",
-            survey: {
-                title: "Feedback do Curso de React Native",
-                isActivated: false,
-                description:
-                    "Nos conte o que você achou do curso de React Native.",
-                questions: [
-                    {
-                        title: "Como você avalia o conteúdo do curso?",
-                        options: ["Excelente", "Bom", "Regular", "Ruim"],
-                        currentAnswer: null,
-                        isMandatory: true,
-                    },
-                    {
-                        title: "O curso atendeu suas expectativas?",
-                        options: ["Sim", "Não"],
-                        currentAnswer: null,
-                        isMandatory: true,
-                    },
-                ],
-            },
-        },
-        {
-            surveyId: "survey2",
-            createdAt: "2023-03-21T15:30:00Z",
-            createdBy: "admin456",
-            survey: {
-                title: "Pesquisa de Satisfação de Cliente",
-                isActivated: true,
-                description:
-                    "Ajude-nos a melhorar nossos serviços respondendo esta rápida pesquisa.",
-                questions: [
-                    {
-                        title: "Você recomendaria nossos serviços a amigos ou familiares?",
-                        options: [
-                            "Definitivamente sim",
-                            "Provavelmente sim",
-                            "Provavelmente não",
-                            "Definitivamente não",
-                        ],
-                        currentAnswer: null,
-                        isMandatory: true,
-                    },
-                    {
-                        title: "Como você avalia nosso atendimento ao cliente?",
-                        options: ["Excelente", "Bom", "Regular", "Ruim"],
-                        currentAnswer: null,
-                        isMandatory: true,
-                    },
-                ],
-            },
-        },
-        {
-            surveyId: "survey3",
-            createdAt: "2023-03-21T15:30:00Z",
-            createdBy: "admin456",
-            survey: {
-                title: "Pesquisa de Satisfação de Cliente, testando titulo muito grande",
-                isActivated: false,
-                description:
-                    "Ajude-nos a melhorar nossos serviços respondendo esta rápida pesquisa.",
-                questions: [
-                    {
-                        title: "Você recomendaria nossos serviços a amigos ou familiares?",
-                        options: [
-                            "Definitivamente sim",
-                            "Provavelmente sim",
-                            "Provavelmente não",
-                            "Definitivamente não",
-                        ],
-                        currentAnswer: null,
-                        isMandatory: true,
-                    },
-                    {
-                        title: "Como você avalia nosso atendimento ao cliente?",
-                        options: ["Excelente", "Bom", "Regular", "Ruim"],
-                        currentAnswer: null,
-                        isMandatory: true,
-                    },
-                ],
-            },
-        },
-    ];
+    // const surveys: ISurveyCreation[] = [
+    //     {
+    //         surveyId: "survey1",
+    //         createdAt: "2023-03-20T12:00:00Z",
+    //         createdBy: "user123",
+    //         survey: {
+    //             title: "Feedback do Curso de React Native",
+    //             isActivated: false,
+    //             description:
+    //                 "Nos conte o que você achou do curso de React Native.",
+    //             questions: [
+    //                 {
+    //                     title: "Como você avalia o conteúdo do curso?",
+    //                     options: ["Excelente", "Bom", "Regular", "Ruim"],
+    //                     currentAnswer: null,
+    //                     isMandatory: true,
+    //                 },
+    //                 {
+    //                     title: "O curso atendeu suas expectativas?",
+    //                     options: ["Sim", "Não"],
+    //                     currentAnswer: null,
+    //                     isMandatory: true,
+    //                 },
+    //             ],
+    //         },
+    //     },
+    //     {
+    //         surveyId: "survey2",
+    //         createdAt: "2023-03-21T15:30:00Z",
+    //         createdBy: "admin456",
+    //         survey: {
+    //             title: "Pesquisa de Satisfação de Cliente",
+    //             isActivated: true,
+    //             description:
+    //                 "Ajude-nos a melhorar nossos serviços respondendo esta rápida pesquisa.",
+    //             questions: [
+    //                 {
+    //                     title: "Você recomendaria nossos serviços a amigos ou familiares?",
+    //                     options: [
+    //                         "Definitivamente sim",
+    //                         "Provavelmente sim",
+    //                         "Provavelmente não",
+    //                         "Definitivamente não",
+    //                     ],
+    //                     currentAnswer: null,
+    //                     isMandatory: true,
+    //                 },
+    //                 {
+    //                     title: "Como você avalia nosso atendimento ao cliente?",
+    //                     options: ["Excelente", "Bom", "Regular", "Ruim"],
+    //                     currentAnswer: null,
+    //                     isMandatory: true,
+    //                 },
+    //             ],
+    //         },
+    //     },
+    //     {
+    //         surveyId: "survey3",
+    //         createdAt: "2023-03-21T15:30:00Z",
+    //         createdBy: "admin456",
+    //         survey: {
+    //             title: "Pesquisa de Satisfação de Cliente, testando titulo muito grande",
+    //             isActivated: false,
+    //             description:
+    //                 "Ajude-nos a melhorar nossos serviços respondendo esta rápida pesquisa.",
+    //             questions: [
+    //                 {
+    //                     title: "Você recomendaria nossos serviços a amigos ou familiares?",
+    //                     options: [
+    //                         "Definitivamente sim",
+    //                         "Provavelmente sim",
+    //                         "Provavelmente não",
+    //                         "Definitivamente não",
+    //                     ],
+    //                     currentAnswer: null,
+    //                     isMandatory: true,
+    //                 },
+    //                 {
+    //                     title: "Como você avalia nosso atendimento ao cliente?",
+    //                     options: ["Excelente", "Bom", "Regular", "Ruim"],
+    //                     currentAnswer: null,
+    //                     isMandatory: true,
+    //                 },
+    //             ],
+    //         },
+    //     },
+    // ];
 
+
+    const surveys: ISurveyCreation[] = []
+    
     const goToSurveyEditCreate = (survey = null) => {
         navigation.navigate("SurveyEditCreate", {
             survey: survey ? survey.survey : null,
@@ -113,7 +119,7 @@ const Dashboard = ({ route, navigation }) => {
                 <Text style={styles.surveyText}>Pesquisas</Text>
                 <FlatList
                     data={
-                        user === "admin"
+                        loggedUser.typeOfUser === "admin"
                             ? surveys
                             : surveys.filter(
                                   (survey) => survey.survey.isActivated
@@ -124,7 +130,7 @@ const Dashboard = ({ route, navigation }) => {
                         <TouchableOpacity
                             style={styles.surveyItem}
                             onPress={() =>
-                                user === "admin"
+                                loggedUser.typeOfUser === "admin"
                                     ? goToSurveyEditCreate(item)
                                     : goToSurveyResponse(item.surveyId)
                             }
@@ -137,14 +143,14 @@ const Dashboard = ({ route, navigation }) => {
                                     {item.survey.title}
                                 </Text>
                                 <Text style={styles.surveyDateText}>
-                                    {user === "admin"
+                                    {loggedUser.typeOfUser === "admin"
                                         ? moment(item.createdAt).format(
                                               "DD/MM/YYYY"
                                           )
                                         : item.survey.description}
                                 </Text>
                             </View>
-                            {user === "admin" && (
+                            {loggedUser.typeOfUser === "admin" && (
                                 <Button
                                     icon="square-edit-outline"
                                     children={""}
@@ -154,7 +160,7 @@ const Dashboard = ({ route, navigation }) => {
                         </TouchableOpacity>
                     )}
                 />
-                {user === "admin" && (
+                {loggedUser.typeOfUser === "admin" && (
                     <Button
                         style={styles.addButton}
                         icon="plus"

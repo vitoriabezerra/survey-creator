@@ -3,7 +3,6 @@ export interface ISurveyQuestion {
     title: string;
     isMandatory: boolean;
     options: string[];
-    currentAnswer: string | null;
 }
 
 export interface ISurvey {

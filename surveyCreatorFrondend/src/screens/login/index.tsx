@@ -31,8 +31,9 @@ const Login = ({ navigation }) => {
             const { data } = await login({
                 variables: { email, password },
             });
-            console.log("Login bem-sucedido", data);
+
             navigation.navigate("Dashboard", { user: data.login });
+
             // Limpa os erros e campos se o login for bem-sucedido
             setEmailError(false);
             setPasswordError(false);
