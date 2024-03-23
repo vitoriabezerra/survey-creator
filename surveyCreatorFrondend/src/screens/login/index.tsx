@@ -75,7 +75,7 @@ const Login = ({ navigation }) => {
                             style={{
                                 fontSize: 30,
                                 lineHeight: 130,
-                                color: "rgba(33, 0, 93, 1)",
+                                color: "#af69cd",
                             }}
                         >
                             ®
@@ -155,14 +155,14 @@ const styles = StyleSheet.create({
     surveyText: {
         fontSize: 90,
         fontWeight: "900",
-        color: "rgba(33, 0, 93, 1)",
+        color: "#af69cd",
         lineHeight: 100,
         marginBottom: -50,
     },
     creatorText: {
         fontSize: 70,
         fontWeight: "900",
-        color: "rgba(33, 0, 93, 1)",
+        color: "#af69cd",
         lineHeight: 130,
     },
     input: {
