@@ -32,12 +32,12 @@ const Dashboard = ({ route, navigation }) => {
 
     const goToSurveyEditCreate = (survey = null) => {
         navigation.navigate("SurveyEditCreate", {
-            survey: survey ? survey : null,
+            survey: survey ? survey : null, user
         });
     };
 
     const goToSurveyResponse = (surveyId) => {
-        navigation.navigate("AnswerSurvey", { surveyId });
+        navigation.navigate("AnswerSurvey", { surveyId, user });
     };
 
     return (

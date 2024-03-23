@@ -15,7 +15,7 @@ export const LOGIN_MUTATION = gql`
     }
 `;
 
-export const exoirCREATE_SURVEY_MUTATION = gql`
+export const CREATE_SURVEY_MUTATION = gql`
     mutation CreateSurvey($input: SurveyInput!) {
         createSurvey(input: $input) {
             id

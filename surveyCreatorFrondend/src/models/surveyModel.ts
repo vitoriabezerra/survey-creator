@@ -7,11 +7,11 @@ export interface ISurveyQuestion {
 }
 
 export interface ISurvey {
-    id: string;
+    id?: string;
     title: string;
     isActivated: boolean;
     description: string;
     questions: ISurveyQuestion[];
-    createdAt: string;
+    createdAt?: string;
     createdBy: string;
 }

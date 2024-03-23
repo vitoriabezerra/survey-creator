@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, StyleSheet, Dimensions, Modal } from "react-native";
-import { TextInput, Button, Switch, Text, Divider } from "react-native-paper";
 import {
-    ISurvey,
-    ISurveyCreation,
-    ISurveyQuestion,
-} from "../../models/surveyModel";
+    View,
+    ScrollView,
+    StyleSheet,
+    Dimensions,
+    Modal,
+    Alert,
+} from "react-native";
+import { TextInput, Button, Switch, Text, Divider } from "react-native-paper";
+import { ISurvey, ISurveyQuestion } from "../../models/surveyModel";
+import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
+import {
+    CREATE_SURVEY_MUTATION,
+    UPDATE_SURVEY_MUTATION,
+} from "../../graphql/mutations/mutations";
+import { useMutation } from "@apollo/client";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
@@ -21,10 +30,10 @@ const QuestionInputModal = ({ visible, onAddQuestion, onClose }) => {
     const handleAddAndClose = () => {
         if (questionTitle && options) {
             onAddQuestion({
+                id: uuidv4(),
                 title: questionTitle,
                 isMandatory,
                 options: options.split(";").map((option) => option.trim()),
-                currentAnswer: null,
             });
             // Limpa os campos após adicionar
             setQuestionTitle("");
@@ -96,15 +105,18 @@ const SurveyQuestionsPreview = ({ questions, onRemoveQuestion }) => {
 
 // Componente principal para criar a pesquisa
 const CreateEditSurveyScreen = ({ route, navigation }) => {
+    const { user } = route.params;
     const [survey, setSurvey] = useState<ISurvey>({
         title: "",
         isActivated: true,
         description: "",
         questions: [],
+        createdBy: user.email,
     });
-    const [isActivated, setIsActivated] = useState<boolean>(false);
     const [isEdition, setIsEdition] = useState<boolean>(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [createSurvey] = useMutation(CREATE_SURVEY_MUTATION);
+    const [updateSurvey] = useMutation(UPDATE_SURVEY_MUTATION);
 
     // Se existir uma pequisa já criada, ele irá para tela de edição
     useEffect(() => {
@@ -128,13 +140,33 @@ const CreateEditSurveyScreen = ({ route, navigation }) => {
         }));
     };
 
-    const handleCreateSurvey = () => {
-        const newSurvey: ISurveyCreation = {
-            surveyId: uuidv4(),
-            createdBy: "user123",
-            createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
-            survey: survey,
-        };
+    const handleCreateUpdateSurvey = async () => {
+        try {
+            if (isEdition) {
+                // Chama a mutation de atualização
+                await updateSurvey({
+                    variables: {
+                        id: survey.id,
+                        input: {
+                            survey,
+                        },
+                    },
+                });
+                Alert.alert("Sucesso", "Pesquisa atualizada com sucesso!");
+            } else {
+                // Chama a mutation de criação
+                await createSurvey({
+                    variables: {
+                        input: {
+                            survey,
+                        },
+                    },
+                });
+                Alert.alert("Sucesso", "Pesquisa criada com sucesso!");
+            }
+        } catch (error) {
+            Alert.alert("Erro", error.message);
+        }
     };
 
     // Aqui você implementaria a lógica para salvar a pesquisa, por exemplo, enviando para uma API
@@ -169,7 +201,6 @@ const CreateEditSurveyScreen = ({ route, navigation }) => {
                         <Switch
                             value={survey.isActivated}
                             onValueChange={(value) => {
-                                setIsActivated(value);
                                 setSurvey({
                                     ...survey,
                                     isActivated: value,
@@ -200,7 +231,7 @@ const CreateEditSurveyScreen = ({ route, navigation }) => {
             <View style={styles.footer}>
                 <Button
                     mode="contained"
-                    onPress={handleCreateSurvey}
+                    onPress={() => handleCreateUpdateSurvey()}
                     disabled={
                         survey.questions.length === 0 || survey.title === ""
                     }
@@ -278,7 +309,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#f0f0f0", // Um fundo leve para cada pergunta
         borderRadius: 8,
         padding: 10,
-        paddingRight:0,
+        paddingRight: 0,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
