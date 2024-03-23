@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-express"; // Ou 'apollo-server' se você não estiver usando Express.
+
 
 export const userType = `#graphql
     # Enum para o tipo de usuário
