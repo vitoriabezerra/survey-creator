@@ -68,21 +68,43 @@ const Dashboard = ({ route, navigation }) => {
                                 }}
                                 disabled={isAnswered} // Desabilita a interatividade se já foi respondida
                             >
-                                <View style={{ flexDirection: "column" }}>
-                                    <Text style={styles.surveyTitle}>
-                                        {item.title}
-                                    </Text>
-                                    <Text style={styles.surveyDateText}>
-                                        {loggedUser.typeOfUser === "admin"
-                                            ? moment(item.createdAt).format(
-                                                  "DD/MM/YYYY"
-                                              )
-                                            : item.description}
-                                    </Text>
-                                    {isAnswered && (
-                                        <View style={{marginTop:10}}>
-                                            <Text>✓ Respondido</Text>
-                                        </View>
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        alignItems: "center", // Alinha os itens verticalmente
+                                        width: "100%",
+                                    }}
+                                >
+                                    <View style={{ flex: 1, paddingRight: 10 }}>
+                                        <Text
+                                            style={styles.surveyTitle}
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                        >
+                                            {item.title}
+                                        </Text>
+                                        <Text style={styles.surveyDateText}>
+                                            {loggedUser.typeOfUser === "admin"
+                                                ? moment(item.createdAt).format(
+                                                      "DD/MM/YYYY"
+                                                  )
+                                                : item.description}
+                                        </Text>
+                                        {isAnswered && (
+                                            <View style={{ marginTop: 10 }}>
+                                                <Text>✓ Respondido</Text>
+                                            </View>
+                                        )}
+                                    </View>
+                                    {loggedUser.typeOfUser === "admin" && (
+                                        <Button
+                                            icon="square-edit-outline"
+                                            onPress={() =>
+                                                goToSurveyEditCreate(item)
+                                            }
+                                            children={""}
+                                        />
                                     )}
                                 </View>
                             </TouchableOpacity>
@@ -143,7 +165,7 @@ const styles = StyleSheet.create({
     surveyItemDisabled: {
         opacity: 0.5, // Torna o card mais "pálido"
     },
-    
+
     surveyDateText: {
         fontSize: 14,
     },
