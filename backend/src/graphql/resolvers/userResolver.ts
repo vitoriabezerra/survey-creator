@@ -8,6 +8,11 @@ interface MessageResponse {
     message: string;
 }
 
+interface AddSurveyInput {
+    surveyId: string;
+    userId: string;
+}
+
 const bcrypt = require("bcrypt");
 const saltRounds = 10; //numero de salts para o has
 

@@ -53,5 +53,7 @@ export const userType = `#graphql
         createUser(input: UserInput!): User!
         login(email: String!, password: String!): User!
         resetPassword(email: String!, password: String!): MessageResponse!
+        addAnsweredSurvey(userId: ID!, surveyId: ID!): User
+        addCreatedSurvey(userId: ID!, surveyId: ID!): User
     }
 `;

@@ -1,4 +1,5 @@
 import Survey, { ISurvey } from "../../models/survey";
+import User from "../../models/user";
 
 interface QuerySurveyArgs {
     isActivated?: boolean;
@@ -20,7 +21,7 @@ export const surveyResolver = {
             { isActivated, createdBy }: QuerySurveyArgs
         ): Promise<ISurvey[]> => {
             // Assumindo que ISurvey é a interface do seu modelo Survey
-            let filters: any = {}; 
+            let filters: any = {};
             if (isActivated !== undefined) {
                 filters.isActivated = isActivated;
             }
@@ -38,6 +39,12 @@ export const surveyResolver = {
                 ...input,
                 createdAt: new Date().toISOString(),
             });
+
+            // Atualiza o usuário para incluir a pesquisa nas criadas
+            await User.updateOne(
+                { id: input.createdBy },
+                { $addToSet: { "surveys.created": input.id } }
+            );
             return await newSurvey.save();
         },
         // Atualizar uma survey existente
