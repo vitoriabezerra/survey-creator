@@ -36,8 +36,8 @@ const Dashboard = ({ route, navigation }) => {
         });
     };
 
-    const goToSurveyResponse = (surveyId) => {
-        navigation.navigate("AnswerSurvey", { surveyId, user });
+    const goToSurveyResponse = (survey: ISurvey) => {
+        navigation.navigate("AnswerSurvey", { survey, user });
     };
 
     return (
@@ -61,7 +61,7 @@ const Dashboard = ({ route, navigation }) => {
                                     if (loggedUser.typeOfUser === "admin") {
                                         goToSurveyEditCreate(item);
                                     } else if (!isAnswered) {
-                                        goToSurveyResponse(item.id);
+                                        goToSurveyResponse(item);
                                     } else {
                                         // Opcionalmente, maneje o caso de tentar responder uma pesquisa já respondida
                                     }

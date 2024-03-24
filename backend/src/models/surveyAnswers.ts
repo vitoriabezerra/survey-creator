@@ -1,10 +1,7 @@
 export interface ISurveyAnswer {
     surveyId: string;
     userId: string;
-    answers: Array<{
-        questionId: string;
-        answer: string;
-    }>;
+    answers: QuestionAnswer[];
 }
 
 interface QuestionAnswer {
