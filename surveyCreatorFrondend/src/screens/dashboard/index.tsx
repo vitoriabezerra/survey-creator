@@ -23,7 +23,6 @@ const Dashboard = ({ route, navigation }) => {
     useEffect(() => {
         // Quando os dados forem recebidos e não estiverem mais carregando, atualize o estado de surveys
         if (!loading && data) {
-            console.log(data);
             setSurveys(data.surveys);
         }
     }, [loading, data]); // Depende de loading e data para reagir a mudanças
@@ -32,7 +31,8 @@ const Dashboard = ({ route, navigation }) => {
 
     const goToSurveyEditCreate = (survey = null) => {
         navigation.navigate("SurveyEditCreate", {
-            survey: survey ? survey : null, user
+            survey: survey ? survey : null,
+            user,
         });
     };
 

@@ -11,13 +11,11 @@ import { TextInput, Button, Switch, Text, Divider } from "react-native-paper";
 import { ISurvey, ISurveyQuestion } from "../../models/surveyModel";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
-import moment from "moment";
 import {
     CREATE_SURVEY_MUTATION,
     UPDATE_SURVEY_MUTATION,
 } from "../../graphql/mutations/mutations";
 import { useMutation } from "@apollo/client";
-
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
 
@@ -121,7 +119,23 @@ const CreateEditSurveyScreen = ({ route, navigation }) => {
     // Se existir uma pequisa já criada, ele irá para tela de edição
     useEffect(() => {
         if (route.params?.survey) {
-            setSurvey(route.params.survey);
+            // Clone profundo necessário para evitar a mutação direta de props
+            let surveyClone = JSON.parse(JSON.stringify(route.params.survey));
+
+            // Remove a propriedade __typename do objeto survey, se existir
+            delete surveyClone.__typename;
+
+            // Se existirem questions, remove __typename de cada uma delas
+            if (surveyClone.questions && Array.isArray(surveyClone.questions)) {
+                surveyClone.questions = surveyClone.questions.map(
+                    (question) => {
+                        const { __typename, ...rest } = question;
+                        return rest;
+                    }
+                );
+            }
+
+            setSurvey(surveyClone);
             setIsEdition(true);
         }
     }, [route.params?.survey]);
@@ -142,14 +156,21 @@ const CreateEditSurveyScreen = ({ route, navigation }) => {
 
     const handleCreateUpdateSurvey = async () => {
         try {
+            const input = {
+                title: survey.title,
+                isActivated: survey.isActivated,
+                description: survey.description,
+                questions: survey.questions,
+                createdBy: survey.createdBy,
+                createdAt: new Date(),
+            };
+
             if (isEdition) {
                 // Chama a mutation de atualização
                 await updateSurvey({
                     variables: {
                         id: survey.id,
-                        input: {
-                            survey,
-                        },
+                        input, // Atualizado para usar o novo objeto de entrada sem __typename
                     },
                 });
                 Alert.alert("Sucesso", "Pesquisa atualizada com sucesso!");
@@ -157,9 +178,7 @@ const CreateEditSurveyScreen = ({ route, navigation }) => {
                 // Chama a mutation de criação
                 await createSurvey({
                     variables: {
-                        input: {
-                            survey,
-                        },
+                        input, // Atualizado para usar o novo objeto de entrada sem __typename
                     },
                 });
                 Alert.alert("Sucesso", "Pesquisa criada com sucesso!");

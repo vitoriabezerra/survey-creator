@@ -18,7 +18,6 @@ export const LOGIN_MUTATION = gql`
 export const CREATE_SURVEY_MUTATION = gql`
     mutation CreateSurvey($input: SurveyInput!) {
         createSurvey(input: $input) {
-            id
             title
             description
             isActivated
@@ -27,7 +26,6 @@ export const CREATE_SURVEY_MUTATION = gql`
                 isMandatory
                 options
             }
-            createdAt
             createdBy
         }
     }

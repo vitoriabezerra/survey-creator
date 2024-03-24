@@ -8,6 +8,7 @@ export const GET_SURVEYS_QUERY = gql`
             description
             isActivated
             questions {
+                id
                 title
                 isMandatory
                 options

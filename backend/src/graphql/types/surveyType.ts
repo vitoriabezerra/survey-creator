@@ -1,6 +1,7 @@
 export const surveyType = `#graphql
 
     type SurveyQuestion {
+        id: String!
         title: String!
         isMandatory: Boolean!
         options: [String]!
@@ -19,6 +20,7 @@ export const surveyType = `#graphql
 
     # Tipo de entrada para perguntas da pesquisa, usado em SurveyInput
     input SurveyQuestionInput {
+        id: String!
         title: String!
         isMandatory: Boolean!
         options: [String]!

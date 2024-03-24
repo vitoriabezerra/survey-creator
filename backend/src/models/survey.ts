@@ -18,6 +18,7 @@ export interface ISurvey {
 }
 
 const SurveyQuestionSchema = new mongoose.Schema({
+    id: String,
     title: String,
     isMandatory: Boolean,
     options: [String],
