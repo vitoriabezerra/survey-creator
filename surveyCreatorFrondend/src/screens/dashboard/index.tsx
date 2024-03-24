@@ -172,7 +172,6 @@ const styles = StyleSheet.create({
     addButton: {
         margin: 20,
     },
-    // Adicione outros estilos necessários aqui
 });
 
 export default Dashboard;

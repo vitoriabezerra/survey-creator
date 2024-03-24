@@ -1,37 +1,71 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import { RadioButton, Button } from "react-native-paper";
+import { ISurveyQuestion } from "../../models/surveyModel";
+import { ISurveyAnswer } from "../../models/surveyAnswersModel";
 
 const AnswerSurveyScreen = ({ route }) => {
-    const { survey } = route.params;
-    const [responses, setResponses] = useState({});
+    const { survey, user } = route.params;
+    const [response, setResponse] = useState<ISurveyAnswer>({
+        surveyId: survey.id,
+        userId: user.id,
+        answers: [],
+    });
 
-    const handleResponseChange = (questionTitle, value) => {
-        setResponses((prevResponses) => ({
-            ...prevResponses,
-            [questionTitle]: value,
-        }));
+    const handleResponseChange = (questionId, selectedOption) => {
+        // Atualiza o estado para incluir a nova resposta,
+        // garantindo que estamos usando questionId em vez do título da pergunta
+        setResponse((prevResponses) => {
+            const newAnswers = [...prevResponses.answers];
+            const answerIndex = newAnswers.findIndex(
+                (answer) => answer.questionId === questionId
+            );
+
+            if (answerIndex >= 0) {
+                // Atualiza a resposta existente
+                newAnswers[answerIndex] = {
+                    ...newAnswers[answerIndex],
+                    selectedOption,
+                };
+            } else {
+                // Adiciona uma nova resposta se não existir uma para a pergunta
+                newAnswers.push({ questionId, selectedOption });
+            }
+
+            return { ...prevResponses, answers: newAnswers };
+        });
+
+        console.log(response);
     };
 
     const submitResponses = () => {
         // Verifica se todas as perguntas obrigatórias foram respondidas
-        const allMandatoryQuestionsAnswered = survey.questions.every(question => {
-          return !question.isMandatory || (question.isMandatory && responses[question.title]);
-        });
-      
+        const allMandatoryQuestionsAnswered = survey.questions.every(
+            (question) => {
+                if (!question.isMandatory) return true; // Se não for obrigatória, considera como respondida
+
+                // Verifica se existe alguma resposta para a pergunta obrigatória
+                return response.answers.some(
+                    (answer) =>
+                        answer.questionId === question.id &&
+                        answer.selectedOption !== undefined
+                );
+            }
+        );
+
         if (!allMandatoryQuestionsAnswered) {
-          Alert.alert(
-            "Perguntas obrigatórias não respondidas",
-            "Por favor, responda a todas as perguntas obrigatórias antes de enviar.",
-            [{ text: "OK" }]
-          );
-          return;
+            Alert.alert(
+                "Perguntas obrigatórias não respondidas",
+                "Por favor, responda a todas as perguntas obrigatórias antes de enviar.",
+                [{ text: "CONTINUAR" }]
+            );
+            return;
         }
-      
+
         // Se todas as perguntas obrigatórias foram respondidas, prossiga com o envio
-        console.log("Respostas enviadas:", responses);
+        console.log("Respostas enviadas:", response);
         // Aqui você adicionaria a lógica para enviar as respostas para o backend ou outro tratamento necessário
-      };
+    };
 
     return (
         <View style={{ flex: 1, padding: 30 }}>
@@ -48,10 +82,18 @@ const AnswerSurveyScreen = ({ route }) => {
                             )}
                         </Text>
                         <RadioButton.Group
-                            onValueChange={(value) =>
-                                handleResponseChange(question.title, value)
+                            onValueChange={(selectedOption) =>
+                                handleResponseChange(
+                                    question.id,
+                                    selectedOption
+                                )
                             }
-                            value={responses[question.title] || ""}
+                            value={
+                                response.answers.find(
+                                    (answer) =>
+                                        answer.questionId === question.id
+                                )?.selectedOption || ""
+                            }
                         >
                             {question.options.map((option, optionIndex) => (
                                 <View
