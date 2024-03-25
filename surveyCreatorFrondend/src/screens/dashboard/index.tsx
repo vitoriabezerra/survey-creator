@@ -53,8 +53,14 @@ const Dashboard = ({ route, navigation }) => {
         React.useCallback(() => {
             // Refetch ambas as queries ao ganhar foco
             refetchSurveys();
+        }, [refetchSurveys])
+    );
+
+    useFocusEffect(
+        React.useCallback(() => {
+            // Refetch ambas as queries ao ganhar foco
             refetchUser();
-        }, [refetchSurveys, refetchUser])
+        }, [refetchUser])
     );
 
     // Atualiza o estado local com os dados das pesquisas
@@ -78,9 +84,7 @@ const Dashboard = ({ route, navigation }) => {
         navigation.navigate("SurveyEditCreate", {
             survey: survey ? survey : null,
             user,
-            onGoBack: () => {
-                refetchSurveys();
-                refetchUser();}
+            onGoBack: () => refetchSurveys(),
         });
     };
 
@@ -88,9 +92,7 @@ const Dashboard = ({ route, navigation }) => {
         navigation.navigate("AnswerSurvey", {
             survey,
             user,
-            onGoBack: () => {
-                refetchSurveys();
-                refetchUser();}
+            onGoBack: () => refetchUser(),
         });
     };
 

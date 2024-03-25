@@ -9,8 +9,6 @@ const SurveyDataScreen = ({ route }) => {
         variables: { surveyId },
     });
 
-    const [total, setTotal] = useState<number>(0);
-
     if (loading) return <Text>Carregando...</Text>;
     if (error) return <Text>Erro: {error.message}</Text>;
 
