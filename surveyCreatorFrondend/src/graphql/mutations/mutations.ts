@@ -48,3 +48,11 @@ export const UPDATE_SURVEY_MUTATION = gql`
         }
     }
 `;
+
+export const ANSWER_SURVEY_MUTATION = gql`
+    mutation AnswerSurvey($input: SurveyAnswerInput!) {
+        answerSurvey(input: $input) {
+            message
+        }
+    }
+`;

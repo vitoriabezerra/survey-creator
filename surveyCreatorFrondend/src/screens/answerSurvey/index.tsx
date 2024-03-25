@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import { RadioButton, Button } from "react-native-paper";
-import { ISurveyQuestion } from "../../models/surveyModel";
 import { ISurveyAnswer } from "../../models/surveyAnswersModel";
+import { ANSWER_SURVEY_MUTATION } from "../../graphql/mutations/mutations";
+import { useMutation } from "@apollo/client";
 
 const AnswerSurveyScreen = ({ route }) => {
     const { survey, user } = route.params;
@@ -11,6 +12,10 @@ const AnswerSurveyScreen = ({ route }) => {
         userId: user.id,
         answers: [],
     });
+
+    const [answerSurvey, { data, loading, error }] = useMutation(
+        ANSWER_SURVEY_MUTATION
+    );
 
     const handleResponseChange = (questionId, selectedOption) => {
         // Atualiza o estado para incluir a nova resposta,
@@ -34,11 +39,9 @@ const AnswerSurveyScreen = ({ route }) => {
 
             return { ...prevResponses, answers: newAnswers };
         });
-
-        console.log(response);
     };
 
-    const submitResponses = () => {
+    const submitResponses = async () => {
         // Verifica se todas as perguntas obrigatórias foram respondidas
         const allMandatoryQuestionsAnswered = survey.questions.every(
             (question) => {
@@ -62,9 +65,26 @@ const AnswerSurveyScreen = ({ route }) => {
             return;
         }
 
-        // Se todas as perguntas obrigatórias foram respondidas, prossiga com o envio
-        console.log("Respostas enviadas:", response);
-        // Aqui você adicionaria a lógica para enviar as respostas para o backend ou outro tratamento necessário
+        try {
+            await answerSurvey({
+                variables: {
+                    input: {
+                        surveyId: response.surveyId,
+                        userId: response.userId,
+                        answers: response.answers.map((ans) => ({
+                            questionId: ans.questionId,
+                            answer: ans.selectedOption,
+                        })),
+                    },
+                },
+            });
+            Alert.alert("Sucesso", "Respostas enviadas com sucesso.", [
+                { text: "CONTINUAR" },
+            ]);
+        } catch (error) {
+            // Handle errors
+            console.error(error);
+        }
     };
 
     return (
