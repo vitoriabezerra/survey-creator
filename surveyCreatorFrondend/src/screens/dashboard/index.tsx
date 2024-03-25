@@ -34,11 +34,10 @@ const Dashboard = ({ route, navigation }) => {
     });
 
     useEffect(() => {
-        // Quando os dados forem recebidos e não estiverem mais carregando, atualize o estado de surveys
         if (!loading && data) {
             setSurveys(data.surveys);
         }
-    }, [loading, data]); // Depende de loading e data para reagir a mudanças
+    }, [loading, data]);
 
     if (loading) return <Text>...</Text>;
 
@@ -58,8 +57,8 @@ const Dashboard = ({ route, navigation }) => {
         setIsModalVisible(true);
     };
 
-    const goToSurveyData = (surveyId: string) => {
-        navigation.navigate("SurveyData", { surveyId });
+    const goToSurveyData = (surveyId: string, survey: ISurvey) => {
+        navigation.navigate("SurveyData", { surveyId, survey });
     };
 
     return (
@@ -169,7 +168,10 @@ const Dashboard = ({ route, navigation }) => {
                                     mode="contained"
                                     style={styles.button}
                                     onPress={() => {
-                                        goToSurveyData(selectedSurvey.id);
+                                        goToSurveyData(
+                                            selectedSurvey.id,
+                                            selectedSurvey
+                                        );
                                         setIsModalVisible(false);
                                     }}
                                 >
