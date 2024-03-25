@@ -8,6 +8,10 @@ interface MessageResponse {
     message: string;
 }
 
+interface QueryInput {
+    id: string;
+}
+
 interface AddSurveyInput {
     surveyId: string;
     userId: string;
@@ -18,7 +22,17 @@ const saltRounds = 10; //numero de salts para o has
 
 export const userResolver = {
     Query: {
-        users: async () => await User.find({}),
+        user: async (_: unknown, { id }: QueryInput) => {
+            try {
+                const user = await User.findOne({ id: id });
+                return user;
+            } catch (error) {
+                throw new Error("User not found");
+            }
+        },
+        users: async () => {
+            return await User.find({});
+        },
     },
     Mutation: {
         createUser: async (_: unknown, { input }: CreateUserArgs) => {

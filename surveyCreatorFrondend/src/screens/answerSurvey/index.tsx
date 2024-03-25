@@ -5,8 +5,8 @@ import { ISurveyAnswer } from "../../models/surveyAnswersModel";
 import { ANSWER_SURVEY_MUTATION } from "../../graphql/mutations/mutations";
 import { useMutation } from "@apollo/client";
 
-const AnswerSurveyScreen = ({ route }) => {
-    const { survey, user } = route.params;
+const AnswerSurveyScreen = ({ route, navigation }) => {
+    const { survey, user, onGoBack} = route.params;
     const [response, setResponse] = useState<ISurveyAnswer>({
         surveyId: survey.id,
         userId: user.id,
@@ -81,6 +81,8 @@ const AnswerSurveyScreen = ({ route }) => {
             Alert.alert("Sucesso", "Respostas enviadas com sucesso.", [
                 { text: "CONTINUAR" },
             ]);
+            onGoBack?.();
+            navigation.goBack();
         } catch (error) {
             // Handle errors
             console.error(error);

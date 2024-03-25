@@ -12,9 +12,13 @@ import {
 import { Button, Text } from "react-native-paper";
 import moment from "moment";
 import { IUser } from "../../models/userModel";
-import { GET_SURVEYS_QUERY } from "../../graphql/queries/queries";
+import {
+    GET_SURVEYS_QUERY,
+    GET_USER_QUERY,
+} from "../../graphql/queries/queries";
 import { useQuery } from "@apollo/client";
 import { ISurvey } from "../../models/surveyModel";
+import { useFocusEffect } from "@react-navigation/native";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
@@ -25,31 +29,69 @@ const Dashboard = ({ route, navigation }) => {
     const [surveys, setSurveys] = useState<ISurvey[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedSurvey, setSelectedSurvey] = useState<ISurvey>(null);
+    const [loggedUser, setLoggedUser] = useState<IUser>(user);
 
-    const loggedUser: IUser = user;
-    const { loading, error, data } = useQuery(GET_SURVEYS_QUERY, {
+    const {
+        loading: loadingSurveys,
+        data: dataSurveys,
+        refetch: refetchSurveys,
+    } = useQuery(GET_SURVEYS_QUERY, {
         variables: {
-            isActivated: loggedUser.typeOfUser === "user" ? true : undefined,
+            isActivated: user.typeOfUser === "user" ? true : undefined,
         },
     });
 
-    useEffect(() => {
-        if (!loading && data) {
-            setSurveys(data.surveys);
-        }
-    }, [loading, data]);
+    const {
+        loading: loadingUser,
+        data: dataUser,
+        refetch: refetchUser,
+    } = useQuery(GET_USER_QUERY, {
+        variables: { id: user.id },
+    });
 
-    if (loading) return <Text>...</Text>;
+    useFocusEffect(
+        React.useCallback(() => {
+            // Refetch ambas as queries ao ganhar foco
+            refetchSurveys();
+            refetchUser();
+        }, [refetchSurveys, refetchUser])
+    );
+
+    // Atualiza o estado local com os dados das pesquisas
+    useEffect(() => {
+        if (!loadingSurveys && dataSurveys) {
+            setSurveys(dataSurveys.surveys);
+        }
+    }, [loadingSurveys, dataSurveys]);
+
+    // Atualiza o estado local com os dados do usuário
+    useEffect(() => {
+        if (!loadingUser && dataUser) {
+            setLoggedUser(dataUser.user);
+        }
+    }, [loadingUser, dataUser]);
+
+    // Renderiza loading se qualquer um dos dados estiver carregando
+    if (loadingSurveys || loadingUser) return <Text>Carregando...</Text>;
 
     const goToSurveyEditCreate = (survey = null) => {
         navigation.navigate("SurveyEditCreate", {
             survey: survey ? survey : null,
             user,
+            onGoBack: () => {
+                refetchSurveys();
+                refetchUser();}
         });
     };
 
     const goToSurveyResponse = (survey: ISurvey) => {
-        navigation.navigate("AnswerSurvey", { survey, user });
+        navigation.navigate("AnswerSurvey", {
+            survey,
+            user,
+            onGoBack: () => {
+                refetchSurveys();
+                refetchUser();}
+        });
     };
 
     const handleSurveyClick = (item: ISurvey) => {

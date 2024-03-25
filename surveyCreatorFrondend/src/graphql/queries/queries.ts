@@ -30,3 +30,20 @@ export const GET_SURVEY_ANSWERS = gql`
         }
     }
 `;
+
+export const GET_USER_QUERY = gql`
+    query GetUser($id: ID!) {
+        user(id: $id) {
+            id
+            name
+            email
+            typeOfUser
+            createdAt
+            updatedAt
+            surveys {
+                created
+                answered
+            }
+        }
+    }
+`;

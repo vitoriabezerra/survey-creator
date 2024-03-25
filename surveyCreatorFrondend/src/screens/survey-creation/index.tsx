@@ -103,7 +103,7 @@ const SurveyQuestionsPreview = ({ questions, onRemoveQuestion }) => {
 
 // Componente principal para criar a pesquisa
 const CreateEditSurveyScreen = ({ route, navigation }) => {
-    const { user } = route.params;
+    const { user, onGoBack } = route.params;
     const [survey, setSurvey] = useState<ISurvey>({
         title: "",
         isActivated: true,
@@ -170,7 +170,7 @@ const CreateEditSurveyScreen = ({ route, navigation }) => {
                 await updateSurvey({
                     variables: {
                         id: survey.id,
-                        input, // Atualizado para usar o novo objeto de entrada sem __typename
+                        input,
                     },
                 });
                 Alert.alert("Sucesso", "Pesquisa atualizada com sucesso!");
@@ -178,17 +178,17 @@ const CreateEditSurveyScreen = ({ route, navigation }) => {
                 // Chama a mutation de criação
                 await createSurvey({
                     variables: {
-                        input, // Atualizado para usar o novo objeto de entrada sem __typename
+                        input,
                     },
                 });
                 Alert.alert("Sucesso", "Pesquisa criada com sucesso!");
             }
+            onGoBack?.();
+            navigation.goBack();
         } catch (error) {
             Alert.alert("Erro", error.message);
         }
     };
-
-    // Aqui você implementaria a lógica para salvar a pesquisa, por exemplo, enviando para uma API
 
     return (
         <View style={styles.outerContainer}>
