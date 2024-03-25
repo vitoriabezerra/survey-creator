@@ -14,9 +14,13 @@ export const surveyAnswerResolver = {
     Query: {
         surveyAnswers: async (_: unknown, { surveyId, userId }: QueryInput) => {
             try {
-                // Constrói o objeto de filtro baseado nos parâmetros fornecidos
-                const filter = { surveyId, userId };
-                if (userId) filter.userId = userId;
+                // Inicializa o objeto de filtro apenas com surveyId.
+                const filter: any = { surveyId };
+
+                // Adiciona userId ao filtro apenas se ele for fornecido.
+                if (userId) {
+                    filter.userId = userId;
+                }
 
                 const answers = await SurveyAnswer.find(filter);
                 return answers;

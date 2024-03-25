@@ -18,3 +18,15 @@ export const GET_SURVEYS_QUERY = gql`
         }
     }
 `;
+
+export const GET_SURVEY_ANSWERS = gql`
+    query GetSurveyAnswers($surveyId: String!) {
+        surveyAnswers(surveyId: $surveyId) {
+            userId
+            answers {
+                questionId
+                answer
+            }
+        }
+    }
+`;

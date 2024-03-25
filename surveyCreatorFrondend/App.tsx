@@ -10,6 +10,7 @@ import UserDashboard from "./src/screens/answerSurvey";
 import { ApolloProvider } from "@apollo/client";
 import client from "./apollo";
 import AnswerSurveyScreen from "./src/screens/answerSurvey";
+import SurveyDataScreen from "./src/screens/surveyData";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -31,6 +32,10 @@ export default function App() {
                         <Stack.Screen
                             name="AnswerSurvey"
                             component={AnswerSurveyScreen}
+                        />
+                        <Stack.Screen
+                            name="SurveyData"
+                            component={SurveyDataScreen}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>
