@@ -5,7 +5,8 @@ import { Button, TextInput, Text } from "react-native-paper";
 import { useMutation } from "@apollo/client";
 import { LOGIN_MUTATION } from "../../graphql/mutations/mutations";
 import { IUser } from "../../models/userModel";
-import AppLayout from "../../assets/layout";
+import AppLayout from "../../assets/layout/main";
+import SigninSignUpLayout from "../../assets/layout/signin-signup";
 
 interface LoginResponse {
     login: IUser;
@@ -47,19 +48,8 @@ const Login = ({ navigation }) => {
     };
 
     return (
-        <AppLayout>
+        <SigninSignUpLayout>
             <View>
-                {/* Logo */}
-                <ImageBackground
-                    source={require("./image32.png")}
-                    style={{
-                        width: 150,
-                        height: 150,
-                        alignSelf: "center",
-                        marginBottom: 0,
-                    }}
-                ></ImageBackground>
-
                 <View style={styles.texts}>
                     {/* <Text style={styles.surveyText}>Entrary</Text> */}
                     <View
@@ -125,7 +115,7 @@ const Login = ({ navigation }) => {
                     </Button>
                 </View>
             </View>
-        </AppLayout>
+        </SigninSignUpLayout>
     );
 };
 
