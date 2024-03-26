@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import {
-    View,
-    StyleSheet,
-    TouchableOpacity,
-    ImageBackground,
-} from "react-native";
+import { View, StyleSheet, ImageBackground } from "react-native";
 
 import { Button, TextInput, Text } from "react-native-paper";
-import Layout from "../../assets/Layout";
 import { useMutation } from "@apollo/client";
 import { LOGIN_MUTATION } from "../../graphql/mutations/mutations";
 import { IUser } from "../../models/userModel";
+import AppLayout from "../../assets/layout";
 
 interface LoginResponse {
     login: IUser;
@@ -25,7 +20,7 @@ const Login = ({ navigation }) => {
     const [loginError, setLoginError] = useState<string>("");
 
     const [login, { data, loading, error }] = useMutation(LOGIN_MUTATION);
-    // Sign in the user
+    // Sign In usuario
     const handleLogin = async () => {
         try {
             const { data } = await login({
@@ -40,20 +35,21 @@ const Login = ({ navigation }) => {
             setEmail("");
             setPassword("");
         } catch (err) {
-            setLoginError("Usuário ou senha incorretos.");
+            setLoginError("E-mail/senha incorreto.");
             setEmailError(true);
             setPasswordError(true);
         }
     };
 
-    // Redirect to the reset password page
+    // Ir para página de resetar a senha
     const handleForgotPassword = () => {
         console.log("Forgot Password pressed");
     };
 
     return (
-        <Layout>
-            <View style={styles.container}>
+        <AppLayout>
+            <View>
+                {/* Logo */}
                 <ImageBackground
                     source={require("./image32.png")}
                     style={{
@@ -65,22 +61,13 @@ const Login = ({ navigation }) => {
                 ></ImageBackground>
 
                 <View style={styles.texts}>
-                    <Text style={styles.surveyText}>Survey</Text>
+                    {/* <Text style={styles.surveyText}>Entrary</Text> */}
                     <View
                         style={{
                             flexDirection: "row",
                         }}
                     >
-                        <Text style={styles.creatorText}>creator</Text>
-                        <Text
-                            style={{
-                                fontSize: 30,
-                                lineHeight: 130,
-                                color: "#af69cd",
-                            }}
-                        >
-                            ®
-                        </Text>
+                        <Text style={styles.signInText}>Bem vindo(a)!</Text>
                     </View>
                 </View>
 
@@ -132,36 +119,23 @@ const Login = ({ navigation }) => {
                     <Button mode="contained" onPress={handleLogin}>
                         Fazer login
                     </Button>
+
                     <Button mode="text" onPress={handleForgotPassword}>
                         Esqueci a senha
                     </Button>
                 </View>
             </View>
-        </Layout>
+        </AppLayout>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        padding: 30,
-        width: "100%",
-    },
     texts: {
         alignItems: "center",
         textAlign: "center",
-        marginBottom: 20,
     },
-    surveyText: {
-        fontSize: 90,
-        fontWeight: "900",
-        color: "#af69cd",
-        lineHeight: 100,
-        marginBottom: -50,
-    },
-    creatorText: {
-        fontSize: 70,
+    signInText: {
+        fontSize: 40,
         fontWeight: "900",
         color: "#af69cd",
         lineHeight: 130,

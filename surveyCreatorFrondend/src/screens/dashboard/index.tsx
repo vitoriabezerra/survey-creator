@@ -19,6 +19,7 @@ import {
 import { useQuery } from "@apollo/client";
 import { ISurvey } from "../../models/surveyModel";
 import { useFocusEffect } from "@react-navigation/native";
+import AppModal from "../../components/modal";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
@@ -189,48 +190,34 @@ const Dashboard = ({ route, navigation }) => {
                         Criar nova pesquisa
                     </Button>
                 )}
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={isModalVisible}
-                    onRequestClose={() => setIsModalVisible(false)}
-                >
-                    <View style={styles.modalOverlay}>
-                        <View style={styles.centeredView}>
-                            <View style={styles.modalView}>
-                                <Button
-                                    mode="contained"
-                                    style={styles.button}
-                                    onPress={() => {
-                                        goToSurveyEditCreate(selectedSurvey);
-                                        setIsModalVisible(false);
-                                    }}
-                                >
-                                    Editar Pesquisa
-                                </Button>
-                                <Button
-                                    mode="contained"
-                                    style={styles.button}
-                                    onPress={() => {
-                                        goToSurveyData(
-                                            selectedSurvey.id,
-                                            selectedSurvey
-                                        );
-                                        setIsModalVisible(false);
-                                    }}
-                                >
-                                    Ver Respostas
-                                </Button>
-                                <Button
-                                    mode="text"
-                                    onPress={() => setIsModalVisible(false)}
-                                >
-                                    Fechar
-                                </Button>
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
+                <AppModal visibility={[isModalVisible, setIsModalVisible]}>
+                    <Button
+                        mode="contained"
+                        style={styles.button}
+                        onPress={() => {
+                            goToSurveyEditCreate(selectedSurvey);
+                            setIsModalVisible(false);
+                        }}
+                    >
+                        Editar Pesquisa
+                    </Button>
+                    <Button
+                        mode="contained"
+                        style={styles.button}
+                        onPress={() => {
+                            goToSurveyData(selectedSurvey.id, selectedSurvey);
+                            setIsModalVisible(false);
+                        }}
+                    >
+                        Ver Respostas
+                    </Button>
+                    <Button
+                        mode="text"
+                        onPress={() => setIsModalVisible(false)}
+                    >
+                        Fechar
+                    </Button>
+                </AppModal>
             </View>
         </View>
     );
