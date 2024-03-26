@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         padding: 30,
+        paddingBottom: 0,
     },
 });
 

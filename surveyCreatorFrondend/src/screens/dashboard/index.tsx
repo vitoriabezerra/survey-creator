@@ -19,7 +19,7 @@ import {
 import { useQuery } from "@apollo/client";
 import { ISurvey } from "../../models/surveyModel";
 import { useFocusEffect } from "@react-navigation/native";
-import AppModal from "../../components/modal";
+import AppModal from "../../components/modal/modal";
 import AppLayout from "../../assets/layout/main";
 
 const screenHeight = Dimensions.get("window").height;

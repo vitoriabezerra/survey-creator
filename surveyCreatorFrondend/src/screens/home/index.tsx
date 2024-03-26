@@ -1,23 +1,48 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ImageBackground } from "react-native";
 
 import { Button, Icon, Text } from "react-native-paper";
 
 import SigninSignUpLayout from "../../assets/layout/signin-signup";
+import AppButton from "../../components/button";
 
 const Home = ({ navigation }) => {
     // Ir para página de cadastro de usuário
     const handleSignUp = () => {
+        navigation.navigate("SignUp", {});
+    };
+
+    const handleSignIn = () => {
+        navigation.navigate("Login", {});
+    };
+
+    const handleContinue = () => {
         console.log("Vai para a tela de cadastro");
     };
 
     return (
         <SigninSignUpLayout>
             <View style={styles.container}>
-                <Icon source="file-chart-outline" size={80} color="#003b46" />
+                <ImageBackground
+                    source={require("./surveycreator-logo.png")}
+                    style={{ width: 100, height: 100 }}
+                ></ImageBackground>
                 <View style={styles.buttonContainer}>
-                    <Button style={styles.button} mode="contained">Fazer Login</Button>
-                    <Button mode="contained">Continuar sem login</Button>
+                    <AppButton
+                        variant="contained"
+                        onPress={handleSignIn}
+                        style={styles.button}
+                    >
+                        Entrar
+                    </AppButton>
+
+                    <AppButton
+                        variant="contained"
+                        onPress={handleContinue}
+                        style={styles.button}
+                    >
+                        Continuar sem login
+                    </AppButton>
                 </View>
                 <Text>
                     Ainda não tem conta?
@@ -33,19 +58,42 @@ const Home = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        minHeight: 200,
+        minHeight: 230,
         justifyContent: "space-around",
         alignItems: "center",
     },
     buttonContainer: {
-        flexDirection: "row",
+        flexDirection: "column",
+        width: "80%",
     },
     button: {
-        marginRight: 10
+        marginBottom: 10,
+    },
+    buttonBox: {
+        height: 30,
+        marginVertical: 0,
+        marginHorizontal: 0,
+        padding: 0,
+        width: 135,
+    },
+    labelStyle: {
+        fontSize: 12,
+        padding: 0,
+        margin: 0,
+        marginVertical: 5,
+        marginHorizontal: 10,
     },
     signUpText: {
         color: "#61a4ad",
         fontWeight: "bold",
+    },
+    completeFormButton: {
+        height: 30,
+        padding: 0,
+        margin: 0,
+    },
+    completeFormButtonText: {
+        fontSize: 40,
     },
 });
 

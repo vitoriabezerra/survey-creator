@@ -12,6 +12,7 @@ import client from "./apollo";
 import AnswerSurveyScreen from "./src/screens/answerSurvey";
 import SurveyDataScreen from "./src/screens/surveyData";
 import Home from "./src/screens/home";
+import SignUpScreen from "./src/screens/signUp";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
                 <NavigationContainer>
                     <Stack.Navigator initialRouteName="Home">
                         <Stack.Screen name="Home" component={Home} />
+                        <Stack.Screen name="SignUp" component={SignUpScreen} />
                         <Stack.Screen name="Login" component={Login} />
                         <Stack.Screen name="Dashboard" component={Dashboard} />
                         <Stack.Screen
