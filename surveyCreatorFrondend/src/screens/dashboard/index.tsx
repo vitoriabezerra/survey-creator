@@ -20,6 +20,7 @@ import { useQuery } from "@apollo/client";
 import { ISurvey } from "../../models/surveyModel";
 import { useFocusEffect } from "@react-navigation/native";
 import AppModal from "../../components/modal";
+import AppLayout from "../../assets/layout/main";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
@@ -107,119 +108,132 @@ const Dashboard = ({ route, navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={{ padding: 30, paddingTop: 20 }}>
-                <Text style={styles.surveyText}>Pesquisas</Text>
-                <FlatList
-                    data={surveys}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => {
-                        const isAnswered =
-                            loggedUser.typeOfUser === "user" &&
-                            loggedUser.surveys.answered.includes(item.id);
-                        return (
-                            <TouchableOpacity
-                                style={[
-                                    styles.surveyItem,
-                                    isAnswered ? styles.surveyItemDisabled : {},
-                                ]}
-                                onPress={() => {
-                                    if (loggedUser.typeOfUser === "admin") {
-                                        handleSurveyClick(item);
-                                    } else if (!isAnswered) {
-                                        goToSurveyResponse(item);
-                                    } else {
-                                        Alert.alert(
-                                            "Informação",
-                                            "Você já respondeu a esta pesquisa."
-                                        );
-                                    }
-                                }}
-                                disabled={isAnswered} // Desabilita a interatividade se já foi respondida
-                            >
-                                <View
-                                    style={{
-                                        flexDirection: "row",
-                                        justifyContent: "space-between",
-                                        alignItems: "center", // Alinha os itens verticalmente
-                                        width: "100%",
+        <AppLayout>
+            <View style={styles.container}>
+                <View style={{ padding: 30, paddingTop: 20 }}>
+                    <Text style={styles.surveyText}>Pesquisas</Text>
+                    <FlatList
+                        data={surveys}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => {
+                            const isAnswered =
+                                loggedUser.typeOfUser === "user" &&
+                                loggedUser.surveys.answered.includes(item.id);
+                            return (
+                                <TouchableOpacity
+                                    style={[
+                                        styles.surveyItem,
+                                        isAnswered
+                                            ? styles.surveyItemDisabled
+                                            : {},
+                                    ]}
+                                    onPress={() => {
+                                        if (loggedUser.typeOfUser === "admin") {
+                                            handleSurveyClick(item);
+                                        } else if (!isAnswered) {
+                                            goToSurveyResponse(item);
+                                        } else {
+                                            Alert.alert(
+                                                "Informação",
+                                                "Você já respondeu a esta pesquisa."
+                                            );
+                                        }
                                     }}
+                                    disabled={isAnswered} // Desabilita a interatividade se já foi respondida
                                 >
-                                    <View style={{ flex: 1, paddingRight: 10 }}>
-                                        <Text
-                                            style={styles.surveyTitle}
-                                            numberOfLines={1}
-                                            ellipsizeMode="tail"
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            justifyContent: "space-between",
+                                            alignItems: "center", // Alinha os itens verticalmente
+                                            width: "100%",
+                                        }}
+                                    >
+                                        <View
+                                            style={{
+                                                flex: 1,
+                                                paddingRight: 10,
+                                            }}
                                         >
-                                            {item.title}
-                                        </Text>
-                                        <Text style={styles.surveyDateText}>
-                                            {loggedUser.typeOfUser === "admin"
-                                                ? moment(item.createdAt).format(
-                                                      "DD/MM/YYYY"
-                                                  )
-                                                : item.description}
-                                        </Text>
-                                        {isAnswered && (
-                                            <View style={{ marginTop: 10 }}>
-                                                <Text>✓ Respondido</Text>
-                                            </View>
+                                            <Text
+                                                style={styles.surveyTitle}
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                            >
+                                                {item.title}
+                                            </Text>
+                                            <Text style={styles.surveyDateText}>
+                                                {loggedUser.typeOfUser ===
+                                                "admin"
+                                                    ? moment(
+                                                          item.createdAt
+                                                      ).format("DD/MM/YYYY")
+                                                    : item.description}
+                                            </Text>
+                                            {isAnswered && (
+                                                <View style={{ marginTop: 10 }}>
+                                                    <Text>✓ Respondido</Text>
+                                                </View>
+                                            )}
+                                        </View>
+                                        {loggedUser.typeOfUser === "admin" && (
+                                            <Button
+                                                icon="square-edit-outline"
+                                                onPress={() =>
+                                                    goToSurveyEditCreate(item)
+                                                }
+                                                children={""}
+                                            />
                                         )}
                                     </View>
-                                    {loggedUser.typeOfUser === "admin" && (
-                                        <Button
-                                            icon="square-edit-outline"
-                                            onPress={() =>
-                                                goToSurveyEditCreate(item)
-                                            }
-                                            children={""}
-                                        />
-                                    )}
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    }}
-                />
-                {loggedUser.typeOfUser === "admin" && (
-                    <Button
-                        style={styles.addButton}
-                        icon="plus"
-                        mode="contained"
-                        onPress={() => goToSurveyEditCreate(null)}
-                    >
-                        Criar nova pesquisa
-                    </Button>
-                )}
-                <AppModal visibility={[isModalVisible, setIsModalVisible]}>
-                    <Button
-                        mode="contained"
-                        style={styles.button}
-                        onPress={() => {
-                            goToSurveyEditCreate(selectedSurvey);
-                            setIsModalVisible(false);
+                                </TouchableOpacity>
+                            );
                         }}
-                    >
-                        Editar Pesquisa
-                    </Button>
-                    <Button
-                        mode="contained"
-                        style={styles.button}
-                        onPress={() => {
-                            goToSurveyData(selectedSurvey.id, selectedSurvey);
-                            setIsModalVisible(false);
-                        }}
-                    >
-                        Ver Respostas
-                    </Button>
-                    <Button
-                        mode="text"
-                        onPress={() => setIsModalVisible(false)}
-                    >
-                        Fechar
-                    </Button>
-                </AppModal>
+                    />
+                    {loggedUser.typeOfUser === "admin" && (
+                        <Button
+                            style={styles.addButton}
+                            icon="plus"
+                            mode="contained"
+                            onPress={() => goToSurveyEditCreate(null)}
+                        >
+                            Criar nova pesquisa
+                        </Button>
+                    )}
+                    <AppModal visibility={[isModalVisible, setIsModalVisible]}>
+                        <Button
+                            mode="contained"
+                            style={styles.button}
+                            onPress={() => {
+                                goToSurveyEditCreate(selectedSurvey);
+                                setIsModalVisible(false);
+                            }}
+                        >
+                            Editar Pesquisa
+                        </Button>
+                        <Button
+                            mode="contained"
+                            style={styles.button}
+                            onPress={() => {
+                                goToSurveyData(
+                                    selectedSurvey.id,
+                                    selectedSurvey
+                                );
+                                setIsModalVisible(false);
+                            }}
+                        >
+                            Ver Respostas
+                        </Button>
+                        <Button
+                            mode="text"
+                            onPress={() => setIsModalVisible(false)}
+                        >
+                            Fechar
+                        </Button>
+                    </AppModal>
+                </View>
             </View>
-        </View>
+        </AppLayout>
     );
 };
 
@@ -230,7 +244,7 @@ const styles = StyleSheet.create({
     surveyText: {
         fontSize: 22,
         fontWeight: "700",
-        color: "#af69cd",
+        color: "#61a4ad",
         marginBottom: 10,
     },
     surveyItem: {

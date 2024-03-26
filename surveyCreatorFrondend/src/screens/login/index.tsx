@@ -125,9 +125,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     signInText: {
-        fontSize: 40,
+        fontSize: 30,
         fontWeight: "900",
-        color: "#af69cd",
+        color: "#61a4ad",
         lineHeight: 130,
     },
     input: {

@@ -16,6 +16,7 @@ import {
     UPDATE_SURVEY_MUTATION,
 } from "../../graphql/mutations/mutations";
 import { useMutation } from "@apollo/client";
+import AppLayout from "../../assets/layout/main";
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
 
@@ -191,88 +192,90 @@ const CreateEditSurveyScreen = ({ route, navigation }) => {
     };
 
     return (
-        <View style={styles.outerContainer}>
-            <ScrollView style={styles.container}>
-                <View style={{ padding: 30, paddingTop: 20 }}>
-                    <Text style={styles.surveyText}>
-                        {isEdition ? "Editar" : "Criar"} pesquisa
-                    </Text>
-                    <TextInput
-                        mode="flat"
-                        style={styles.input}
-                        label="Título da pesquisa"
-                        value={survey.title}
-                        onChangeText={(text) =>
-                            setSurvey({ ...survey, title: text })
-                        }
-                    />
-                    <TextInput
-                        style={styles.input}
-                        mode="flat"
-                        label="Descrição"
-                        onChangeText={(text) =>
-                            setSurvey({ ...survey, description: text })
-                        }
-                        value={survey.description}
-                    />
-                    <View style={styles.input}>
-                        <Text>Você deseja ativar essa pesquisa?</Text>
-                        <Switch
-                            value={survey.isActivated}
-                            onValueChange={(value) => {
-                                setSurvey({
-                                    ...survey,
-                                    isActivated: value,
-                                });
-                            }}
+        <AppLayout>
+            <View>
+                <ScrollView style={styles.container}>
+                    <View style={{ padding: 30, paddingTop: 20 }}>
+                        <Text style={styles.surveyText}>
+                            {isEdition ? "Editar" : "Criar"} pesquisa
+                        </Text>
+                        <TextInput
+                            mode="flat"
+                            style={styles.input}
+                            label="Título da pesquisa"
+                            value={survey.title}
+                            onChangeText={(text) =>
+                                setSurvey({ ...survey, title: text })
+                            }
                         />
-                    </View>
-                    <Button icon="plus" onPress={() => setIsModalVisible(true)}>
-                        Adicionar Pergunta
-                    </Button>
-                    <QuestionInputModal
-                        visible={isModalVisible}
-                        onAddQuestion={handleAddQuestion}
-                        onClose={() => setIsModalVisible(false)}
-                    />
-
-                    {survey.questions.length > 0 && (
-                        <View>
-                            <Divider style={{ marginBottom: 10 }} />
-                            <SurveyQuestionsPreview
-                                questions={survey.questions}
-                                onRemoveQuestion={handleRemoveQuestion}
+                        <TextInput
+                            style={styles.input}
+                            mode="flat"
+                            label="Descrição"
+                            onChangeText={(text) =>
+                                setSurvey({ ...survey, description: text })
+                            }
+                            value={survey.description}
+                        />
+                        <View style={styles.input}>
+                            <Text>Você deseja ativar essa pesquisa?</Text>
+                            <Switch
+                                value={survey.isActivated}
+                                onValueChange={(value) => {
+                                    setSurvey({
+                                        ...survey,
+                                        isActivated: value,
+                                    });
+                                }}
                             />
                         </View>
-                    )}
+                        <Button
+                            icon="plus"
+                            onPress={() => setIsModalVisible(true)}
+                        >
+                            Adicionar Pergunta
+                        </Button>
+                        <QuestionInputModal
+                            visible={isModalVisible}
+                            onAddQuestion={handleAddQuestion}
+                            onClose={() => setIsModalVisible(false)}
+                        />
+
+                        {survey.questions.length > 0 && (
+                            <View>
+                                <Divider style={{ marginBottom: 10 }} />
+                                <SurveyQuestionsPreview
+                                    questions={survey.questions}
+                                    onRemoveQuestion={handleRemoveQuestion}
+                                />
+                            </View>
+                        )}
+                    </View>
+                </ScrollView>
+                <View style={styles.footer}>
+                    <Button
+                        mode="contained"
+                        onPress={() => handleCreateUpdateSurvey()}
+                        disabled={
+                            survey.questions.length === 0 || survey.title === ""
+                        }
+                    >
+                        Salvar pesquisa
+                    </Button>
+                    <Button
+                        style={styles.button}
+                        mode="text"
+                        onPress={() => navigation.goBack()}
+                    >
+                        Cancelar
+                    </Button>
                 </View>
-            </ScrollView>
-            <View style={styles.footer}>
-                <Button
-                    mode="contained"
-                    onPress={() => handleCreateUpdateSurvey()}
-                    disabled={
-                        survey.questions.length === 0 || survey.title === ""
-                    }
-                >
-                    Salvar pesquisa
-                </Button>
-                <Button
-                    style={styles.button}
-                    mode="text"
-                    onPress={() => navigation.goBack()}
-                >
-                    Cancelar
-                </Button>
             </View>
-        </View>
+        </AppLayout>
     );
 };
 
 const styles = StyleSheet.create({
-    outerContainer: {
-        flex: 1,
-    },
     container: {
         flex: 1,
         paddingTop: 0,
@@ -282,7 +285,7 @@ const styles = StyleSheet.create({
     surveyText: {
         fontSize: 22,
         fontWeight: "700",
-        color: "#af69cd",
+        color: "#61a4ad",
         marginBottom: 10,
     },
     button: {

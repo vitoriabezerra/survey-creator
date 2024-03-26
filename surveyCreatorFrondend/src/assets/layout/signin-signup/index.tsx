@@ -5,9 +5,12 @@ const SigninSignUpLayout = ({ children }) => {
     return (
         <View style={styles.container}>
             <ImageBackground
-                source={require("./imagemchat.png")}
+                source={require("../imagemchat.png")}
                 style={styles.imageBackground}
             >
+                {/* Camada de Transparência */}
+                <View style={styles.transparencyLayer}></View>
+
                 <View style={styles.overlay}>
                     {/* Caixa branca com sombra */}
                     <View style={styles.whiteBox}>{children}</View>
@@ -38,14 +41,17 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        elevation: 5, // Somente necessário para Android
-        // Ajuste as dimensões conforme necessário
-        width: "80%", // Ou uma medida específica
-        // Altura opcional, depende do conteúdo
+        elevation: 5,
+        width: "80%",
     },
     boxContent: {
         fontSize: 16,
         color: "black",
+    },
+    transparencyLayer: {
+        ...StyleSheet.absoluteFillObject, // Isso faz com que a camada de transparência cubra toda a área da imagem
+        // backgroundColor: "rgba(255, 255, 255, 0.5)", // Ajuste a opacidade aqui
+        backgroundColor: "rgba(0, 0, 0, 0.5)", // Isso adiciona uma camada cinza com 50% de opacidade
     },
 });
 

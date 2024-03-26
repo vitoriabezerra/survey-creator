@@ -11,6 +11,7 @@ import { ApolloProvider } from "@apollo/client";
 import client from "./apollo";
 import AnswerSurveyScreen from "./src/screens/answerSurvey";
 import SurveyDataScreen from "./src/screens/surveyData";
+import Home from "./src/screens/home";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -18,7 +19,8 @@ export default function App() {
         <ApolloProvider client={client}>
             <PaperProvider theme={theme}>
                 <NavigationContainer>
-                    <Stack.Navigator initialRouteName="Login">
+                    <Stack.Navigator initialRouteName="Home">
+                        <Stack.Screen name="Home" component={Home} />
                         <Stack.Screen name="Login" component={Login} />
                         <Stack.Screen name="Dashboard" component={Dashboard} />
                         <Stack.Screen
