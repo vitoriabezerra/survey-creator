@@ -7,8 +7,13 @@ export interface IUser {
     password: string;
     createdAt?: Date;
     updatedAt?: Date;
-    typeOfUser: "admin" | "user";
+    typeOfUser: UserType;
     surveys: IUserSurveys;
+}
+
+enum UserType {
+    user = "user",
+    admin = "admin",
 }
 
 export interface IUserSurveys {

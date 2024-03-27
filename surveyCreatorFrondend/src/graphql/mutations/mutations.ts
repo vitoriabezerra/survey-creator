@@ -15,6 +15,20 @@ export const LOGIN_MUTATION = gql`
     }
 `;
 
+export const CREATE_USER_MUTATION = gql`
+    mutation createUser($input: UserInput!) {
+        createUser(input: $input) {
+            name
+            email
+            typeOfUser
+            surveys {
+                answered
+                created
+            }
+        }
+    }
+`;
+
 export const CREATE_SURVEY_MUTATION = gql`
     mutation CreateSurvey($input: SurveyInput!) {
         createSurvey(input: $input) {

@@ -12,6 +12,7 @@ interface QueryInput {
     id: string;
 }
 
+
 const bcrypt = require("bcrypt");
 const saltRounds = 10; //numero de salts para o has
 

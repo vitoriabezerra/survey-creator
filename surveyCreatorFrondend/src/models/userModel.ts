@@ -1,9 +1,17 @@
 export interface IUser {
-    id: string;
+    id?: string;
     name: string;
     email: string;
-    typeOfUser: "admin" | "user";
+    password: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    typeOfUser: UserType;
     surveys: IUserSurveys;
+}
+
+export enum UserType {
+    user = "user",
+    admin = "admin",
 }
 
 export interface IUserSurveys {
